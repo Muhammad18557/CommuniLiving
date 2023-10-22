@@ -23,30 +23,36 @@ CommuniLiving is a web application designed to elevate the communal living exper
    ```bash
    cd backend
 2. Set up a virtual environment (optional but recommended):
+   ```bash
    python -m venv venv
    source venv/bin/activate
-3. Install the required packages:
+4. Install the required packages:
+   ```bash
    pip install -r requirements.txt
-4. Run Migrations
+6. Run Migrations
+   ```bash
    python manage.py migrate
-5. Start the Django server:
+8. Start the Django server:
+   ```bash
    python manage.py runserver
 
-## Frontend Setup(Next.js)
 ## Frontend Setup (Next.js)
 
 1. Navigate to the frontend directory:
   ```bash
   cd frontend
+  ```
 2. Install the required packages:
-  npm install
-3. Start the Next.js development server:
-  npm run dev
+   ```bash
+   npm install
+4. Start the Next.js development server:
+   ```bash
+   npm run dev
 
-Contributors
+# Contributors
+Muhammad Abdullah
+Mohammad Dabeer Ahmed
 Thomas Jagielski
 Martin Lim
-Mohammad Dabeer Ahmed
-Muhammad Abdullah
 Sanjit Ramesh Chandran
 
