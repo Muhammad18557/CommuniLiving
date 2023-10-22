@@ -36,11 +36,11 @@ CommuniLiving is a web application designed to elevate the communal living exper
    ```bash
    python manage.py runserver
 
-## Frontend Setup (Next.js)
+## Frontend Setup (Next.js Version 13)
 
 1. Navigate to the frontend directory:
   ```bash
-  cd frontend
+   cd frontend
   ```
 2. Install the required packages:
    ```bash
@@ -50,9 +50,9 @@ CommuniLiving is a web application designed to elevate the communal living exper
    npm run dev
 
 # Contributors
-Muhammad Abdullah
-Mohammad Dabeer Ahmed
-Thomas Jagielski
-Martin Lim
-Sanjit Ramesh Chandran
+Muhammad Abdullah  
+Mohammad Dabeer Ahmed  
+Thomas Jagielski  
+Martin Lim  
+Sanjit Ramesh Chandran  
 
