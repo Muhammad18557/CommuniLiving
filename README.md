@@ -39,15 +39,15 @@ CommuniLiving is a web application designed to elevate the communal living exper
 ## Frontend Setup (Next.js Version 13)
 
 1. Navigate to the frontend directory:
-  ```bash
+   ```bash
    cd frontend
-  ```
 2. Install the required packages:
    ```bash
    npm install
-4. Start the Next.js development server:
+3. Start the Next.js development server:
    ```bash
    npm run dev
+
 
 # Contributors
 Muhammad Abdullah  
