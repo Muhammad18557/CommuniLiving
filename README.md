@@ -19,10 +19,10 @@ CommuniLiving is a web application designed to elevate the communal living exper
 
 ## Backend Setup (Django)
 
-1. Navigate to the backend directory: 
+1. Navigate to the backend directory:
    ```bash
    cd backend
-2. Set up a virtual environment (optional but recommended):
+3. Set up a virtual environment (optional but recommended):
    ```bash
    python -m venv venv
    source venv/bin/activate
