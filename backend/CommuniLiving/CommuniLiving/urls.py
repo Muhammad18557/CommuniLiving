@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from amenity_booking.views import amenity_booking_view
+import amenity_booking.views as amenity_booking
+from core.views import index, contact
 
 urlpatterns = [
+    path('', index, name='index'),
+    path('contact/', contact, name='contact'),
     path('admin/', admin.site.urls),
-    path('amenity_booking/', amenity_booking_view),
+    path('book/', amenity_booking.book_amenity, name='book_amenity'),
+    path('booking_success/', amenity_booking.booking_success, name='booking_success')
 ]
