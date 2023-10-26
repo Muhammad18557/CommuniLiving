@@ -1,19 +1,18 @@
 # from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from .models import Booking
 from .forms import BookingForm
 
-def book_amenity(request):
+def add_booking(request):
+    submitted = False
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
-            booking = form.save(commit=False)
-            booking.user = request.user
-            booking.save()
-            return redirect('booking_success')
+            form.save()
+            return HttpResponseRedirect('/add_booking?submitted=True')
     else:
         form = BookingForm()
-    return render(request, 'bookings/booking_form.html', {'form': form})
-
-def booking_success(request):
-    return render(request, 'bookings/booking_success.html')
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request, 'add_booking.html', {'form':form, 'submitted':submitted})
