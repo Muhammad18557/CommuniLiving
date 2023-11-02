@@ -1,0 +1,142 @@
+.home-page {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.home-page .div {
+  background-color: #ffffff;
+  height: 1024px;
+  position: relative;
+  width: 1440px;
+}
+
+.home-page .right-panel {
+  background-color: #e8e8e8;
+  height: 698px;
+  left: 977px;
+  position: absolute;
+  top: 75px;
+  width: 463px;
+}
+
+.home-page .page-info {
+  color: transparent;
+  font-family: "Inter", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  left: 33px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 218px;
+  width: 402px;
+}
+
+.home-page .text-wrapper {
+  color: #53775f;
+  font-weight: 700;
+}
+
+.home-page .span {
+  color: #000000;
+}
+
+.home-page .text-wrapper-2 {
+  color: #000000;
+  font-size: 36px;
+}
+
+.home-page .logo {
+  height: 90px;
+  left: 159px;
+  position: absolute;
+  top: 40px;
+  width: 95px;
+}
+
+.home-page .left-panel {
+  /* background-image: url(../../../static/img/page-image.png); */
+  background-image: url(../assets/home_img_1.jpeg);
+  background-position: 50% 50%;
+  background-size: cover;
+  height: 695px;
+  left: 0;
+  position: absolute;
+  top: 75px;
+  width: 977px;
+}
+
+.home-page .bottom-panel {
+  height: 251px;
+  left: 0;
+  position: absolute;
+  top: 773px;
+  width: 1440px;
+}
+
+.home-page .slogan {
+  color: #53775f;
+  font-family: "Inter", Helvetica;
+  font-size: 64px;
+  font-weight: 400;
+  height: 254px;
+  left: 0;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: -4px;
+  width: 1440px;
+}
+
+.home-page .top-panel {
+  background-color: #89a181;
+  height: 75px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 1440px;
+}
+
+.home-page .home-page-button {
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 40px;
+  left: 54px;
+  position: absolute;
+  top: 17px;
+  width: 40px;
+}
+
+.home-page .contact-page-button {
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 40px;
+  left: 1349px;
+  position: absolute;
+  top: 17px;
+  width: 40px;
+}
+
+.home-page .create-booking-page {
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 40px;
+  left: 1285px;
+  position: absolute;
+  top: 17px;
+  width: 40px;
+}
+
+.home-page .my-dashboard-page {
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 40px;
+  left: 1221px;
+  position: absolute;
+  top: 17px;
+  width: 40px;
+}
