@@ -1,0 +1,19 @@
+<!-- base is a symbolic link to the base in core -->
+{% extends 'base.html' %}
+
+{% block title %} Add Booking {% endblock %}
+
+{% block content %}
+
+    <h1>All Bookings</h1>
+    {% for booking in bookings %}
+    <li>
+        <strong>User:</strong> {{ booking.user.username }}<br>
+        <strong>Amenity:</strong> {{ booking.amenity }}<br>
+        <strong>Date:</strong> {{ booking.date }}<br>
+        <strong>Start Time:</strong> {{ booking.start_time }}<br>
+        <strong>End Time:</strong> {{ booking.end_time }}<br>
+    </li>
+    {% endfor %}
+
+{% endblock %}

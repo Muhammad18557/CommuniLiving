@@ -4,5 +4,10 @@
 
 
 {% block content %}
-    <h1>The Front Page!!</h1>
+    {% if user.is_authenticated %}
+        <h1>Welcome, {{ user.username }}</h1>
+    <!-- Other user information can be displayed here -->
+    {% else %}
+        <h1>Please log in to view this page.</h1>
+    {% endif %}
 {% endblock %}

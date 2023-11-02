@@ -15,11 +15,11 @@
             <a href="/" class="text-xl font-semibold">CommuniLiving</a>
         
             <div class="space-x-6">
-                <a href="#" class="text-lg font-semibold hover:text-gray-500">New Item</a>
-                <a href="#" class="text-lg font-semibold hover:text-gray-500">Browse</a>
+                <a href="{% url 'add_booking' %}" class="text-lg font-semibold hover:text-gray-500">New Booking</a>
+                <a href="{% url 'all_bookings' %}" class="text-lg font-semibold hover:text-gray-500">List Bookings</a>
             
-                <a href="#" class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:gb-teal-700">Sign Up</a>
-                <a href="#" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:gb-gray-700">Log In</a>
+                <a href="{% url 'signup' %}" class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:gb-teal-700">Sign Up</a>
+                <a href="{% url 'login' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:gb-gray-700">Log In</a>
             </div>
         </nav>
             

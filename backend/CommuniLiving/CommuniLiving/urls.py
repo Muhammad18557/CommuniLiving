@@ -16,14 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from amenity_booking.views import add_booking
-from core.views import index, contact
+from amenity_booking.views import add_booking, all_bookings
+# from amenity_booking.views import YourModelAPIView
+from core.views import index, contact, signup
 
 urlpatterns = [
     path('', index, name='index'),
     path("accounts/", include("django.contrib.auth.urls")),
+    path('accounts/signup/', signup, name='signup'),
     path('contact/', contact, name='contact'),
     path('admin/', admin.site.urls),
+    # path('api/your-data/', YourModelAPIView.as_view(), name='your-data-api'),
+
     path('add_booking/', add_booking, name='add_booking'),
-    path('amenity_booking/', include('amenity_booking.urls')),
+    # path('amenity_booking/', include('amenity_booking.urls')),
+    path('all-bookings/', all_bookings, name='all_bookings'),
+
 ]
