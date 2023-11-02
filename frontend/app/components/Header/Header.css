@@ -1,0 +1,139 @@
+.header-container {
+    background: linear-gradient(90deg, rgb(28, 27, 27) 0%, rgb(26, 23, 23) 100%);
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: #242424;
+    height: 80px;
+    font-size: 1.2rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    background-image: url('');
+    background-color: #557D71;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    justify-content: space-between;
+}
+
+.header-logo {
+    height: 80px; /* subject to change to 50px if wan to be in center */
+    width: 120px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 2px solid red; */
+    /* margin-top: 1rem;
+    margin-left: 2rem; */
+}
+
+.menu {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    width: 80vw;
+    grid-gap: 30px;
+    list-style: none;
+    text-align: center;
+    justify-content: end;
+    margin-right: 0rem;
+    margin-top: 0;
+}
+
+.menu-item {
+    height: 80px;
+}
+
+.menu-links {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.2rem 1.2rem;
+    height: 100%;
+}
+
+.fa-bars {
+    color: #fff;
+  }
+
+.fa-times {
+   color: #fff;
+   font-size: 2rem;
+ }
+
+.fa-typo3 {
+    margin-left: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.menu-icon {
+    display: none;
+}
+
+.login-button {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  text-decoration: none;
+  padding: 0.2rem 1.2rem;
+  border-radius: 10px; 
+  height: 60%;
+  border: 1px solid #fff;
+}
+
+
+@media screen and (max-width: 960px) {
+.menu{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 90vh;
+    position: absolute;
+    top: 80px;
+    left: -100%; /* 100% of the screen invisible */
+    opacity: 1;
+    transition: all 0.75s ease; /* 1s to appear back to the screen*/
+}
+.menu.active {
+    background: #242222;
+    left: 0;
+    opacity: 1;
+    transition: all 1s ease;
+    z-index: 1;
+  }
+
+  .menu-links {
+    text-align: center;
+    padding: 2rem;
+    width: 100%;
+    display: table;
+  }
+
+  .menu-links:hover {
+    background-color: #fff;
+    color: #242424;
+    border-radius: 0;
+  }
+  .header-logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(25%, 0%); /* 25% from the left and 1% from the top : subject to change*/
+  }
+  .menu-icon {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-100%, 60%);
+    transition: transform 0.5s ease;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+}
+
+
+

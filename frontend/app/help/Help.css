@@ -1,0 +1,7 @@
+.help-container {
+    border: red 1px solid;
+}
+.help-container .message {
+    border: green 1px solid;
+    color: black;
+}
