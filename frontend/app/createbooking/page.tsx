@@ -1,12 +1,23 @@
 "use client";
 import React, { useState } from 'react';
 import './CreateBooking.css';
+
 function CreateBooking() {
   const [amenity, setAmenity] = useState('Amenity 01');
   const [date, setDate] = useState('Monday 30 October 2023');
   const [time, setTime] = useState('14:00 - 14:30');
   const [contactNumber, setContactNumber] = useState('');
   const [reservationNote, setReservationNote] = useState('');
+
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
 
   const handleBooking = () => {
     // Handle the booking logic here.
@@ -27,15 +38,17 @@ function CreateBooking() {
       </div>
 
       <p className='option-label'>Select date and time</p>
-      <div className='date-and-time'>
-        <div className="date-selection">
-          <input type="text" value={date} onChange={(e) => setDate(e.target.value)} />
-        </div>
-        <div className="time-selection">
-        <input type="text" value={time} onChange={(e) => setTime(e.target.value)} />
-        </div>
+
+      <div className="booking-date-input">
+        <label htmlFor="booking-date"></label>
+        <input
+        id="booking-date"
+        className = "booking-date-input"
+        type="datetime-local"
+        name="booking-date"
+        value={getCurrentDateTime()} />
       </div>
-      
+  
       <p className='option-label'>Notes for Others</p>
       <div className="reservation-notes">
         <textarea placeholder="Study Session" value={reservationNote} onChange={(e) => setReservationNote(e.target.value)}></textarea>

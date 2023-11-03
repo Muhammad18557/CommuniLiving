@@ -119,3 +119,7 @@ textarea:focus {
 .confirm-booking:hover {
     background-color: #45a049;
 }
+
+.booking-date-input{
+    width: 30%;
+}
