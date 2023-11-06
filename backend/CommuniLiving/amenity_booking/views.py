@@ -1,34 +1,66 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from .models import Booking
-from .forms import BookingForm
+# from django.http import HttpResponse
+# from django.shortcuts import render
+# from django.http import HttpResponseRedirect
+# from .models import Booking
+# from .forms import BookingForm
 
-def add_booking(request):
-    submitted = False
-    if request.method == 'POST':
-        form = BookingForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/add_booking?submitted=True')
-    else:
-        form = BookingForm()
-        if 'submitted' in request.GET:
-            submitted = True
-    return render(request, 'add_booking.html', {'form':form, 'submitted':submitted})
+# def add_booking(request):
+#     submitted = False
+#     if request.method == 'POST':
+#         form = BookingForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect('/add_booking?submitted=True')
+#     else:
+#         form = BookingForm()
+#         if 'submitted' in request.GET:
+#             submitted = True
+#     return render(request, 'add_booking.html', {'form':form, 'submitted':submitted})
 
-def all_bookings(request):
-    bookings = Booking.objects.all()
-    return render(request, 'all_bookings.html', {'bookings': bookings})
+# def all_bookings(request):
+#     bookings = Booking.objects.all()
+#     return render(request, 'all_bookings.html', {'bookings': bookings})
 
 # # ------------------------------------------------------------------------------------
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# from .models import Amenity
-# from .serializers import YourModelSerializer
+from django.shortcuts import render 
+from rest_framework.views import APIView 
+from . models import *
+from rest_framework.response import Response 
+from . serializers import *
 
-# class YourModelAPIView(APIView):
-#     def get(self, request):
-#         data = Amenity.objects.all()
-#         serializer = YourModelSerializer(data, many=True)
-#         return Response(serializer.data)
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
+
+from rest_framework import status
+
+class AmenityView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # amenities = Amenity.objects.all()  # Retrieve all amenities from the database
+        # amenity_names = [amenity.name for amenity in amenities]  # Assuming 'name' is the field representing amenity names
+        # return Response(amenity_names)  # Return the list of amenity names as a JSON response
+        amenities = Amenity.objects.all()
+        serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
+        return Response(serializer.data)
+
+
+class BookingView(APIView): 
+    
+    serializer_class = BookingSerializer 
+  
+    def get(self, request): 
+        detail = [ {"name": detail.name,"detail": detail.detail}  
+        for detail in React.objects.all()] 
+        return Response(detail) 
+  
+    def post(self, request): 
+  
+        serializer = BookingSerializer(data=request.data) 
+        if serializer.is_valid(raise_exception=True): 
+            serializer.save() 
+            return  Response(serializer.data) 
+

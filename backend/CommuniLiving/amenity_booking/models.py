@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 class Amenity(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
+    # description = models.TextField(blank=True)
 
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

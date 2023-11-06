@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'amenity_booking',
     'core',
+    'rest_framework',
     'corsheaders',
+    'knox',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +105,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'], 
+    'DEFAULT_AUTHENTICATION_CLASSES': 'knox.auth.TokenAuthentication',
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -129,8 +136,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = "/"
 
 CORS_ALLOW_ALL_ORIGINS = True
+# Allow all HTTP methods
+CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+# Allow all headers
+CORS_ALLOW_HEADERS = ['*']
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8000",
+#     "http://127.0.0.1:8000",
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+#     # "https://REPLACE_WITH_NAME.com", 
+# ]
 

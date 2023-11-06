@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from amenity_booking.views import add_booking, all_bookings
-# from amenity_booking.views import YourModelAPIView
-from core.views import index, contact, signup
+# from amenity_booking.views import add_booking, all_bookings
+from amenity_booking.views import AmenityView, BookingView
+from knox import views as knox_views
+from rest_framework.authtoken.views import obtain_auth_token  # Import for token authentication
+from core.views import index, contact, signup, LoginView
 
 urlpatterns = [
     path('', index, name='index'),
@@ -28,8 +30,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('api/your-data/', YourModelAPIView.as_view(), name='your-data-api'),
 
-    path('add_booking/', add_booking, name='add_booking'),
+    # path('add_booking/', add_booking, name='add_booking'),
     # path('amenity_booking/', include('amenity_booking.urls')),
-    path('all-bookings/', all_bookings, name='all_bookings'),
-
+    # path('all-bookings/', all_bookings, name='all_bookings'),
+    path('api/booking/', BookingView.as_view(), name="booking_view"),
+    path('api/amenity/', AmenityView.as_view(), name="amenity_view"),
+    path('api/accounts/signup/', signup, name='signup'),
+    path('api/accounts/login/', LoginView.as_view(), name='knox_login'),
 ]
