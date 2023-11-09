@@ -33,8 +33,9 @@ urlpatterns = [
     # path('add_booking/', add_booking, name='add_booking'),
     # path('amenity_booking/', include('amenity_booking.urls')),
     # path('all-bookings/', all_bookings, name='all_bookings'),
-    path('api/booking/', BookingView.as_view(), name="booking_view"),
-    path('api/amenity/', AmenityView.as_view(), name="amenity_view"),
-    path('api/accounts/signup/', signup, name='signup'),
-    path('api/accounts/login/', LoginView.as_view(), name='knox_login'),
+    # path('api/booking/', BookingView.as_view(), name="booking_view"),
+    # # path('api/amenity/', AmenityView.as_view(), name="amenity_view"),
+    # path('api/accounts/signup/', signup, name='signup'),
+    # path('api/accounts/login/', LoginView.as_view(), name='knox_login'),
+    path('api/', include('amenity_booking.urls')),
 ]

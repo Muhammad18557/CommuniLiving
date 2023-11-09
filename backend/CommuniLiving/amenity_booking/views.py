@@ -50,11 +50,11 @@ class AmenityView(APIView):
 
 class BookingView(APIView): 
     
-    serializer_class = BookingSerializer 
+    serializer_class = BookingSerializer
   
     def get(self, request): 
-        detail = [ {"name": detail.name,"detail": detail.detail}  
-        for detail in React.objects.all()] 
+        detail = {"name": detail.name,"detail": detail.detail}  
+        # for detail in React.objects.all()] 
         return Response(detail) 
   
     def post(self, request): 
@@ -64,3 +64,18 @@ class BookingView(APIView):
             serializer.save() 
             return  Response(serializer.data) 
 
+
+class DummyView(APIView):
+    authentication_classes = []  # No authentication
+    permission_classes = [AllowAny]  # Allow any user to access
+    def get(self, request):
+        # Example of returning a simple JSON response
+        dummy_data = {
+            "key": "value",
+            "text": "This is to test the connection between the frontend and the backend."
+        }
+        return Response(dummy_data)
+
+    def post(self, request):
+        # Handle POST request
+        pass
