@@ -1,27 +1,3 @@
-# from django.http import HttpResponse
-# from django.shortcuts import render
-# from django.http import HttpResponseRedirect
-# from .models import Booking
-# from .forms import BookingForm
-
-# def add_booking(request):
-#     submitted = False
-#     if request.method == 'POST':
-#         form = BookingForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect('/add_booking?submitted=True')
-#     else:
-#         form = BookingForm()
-#         if 'submitted' in request.GET:
-#             submitted = True
-#     return render(request, 'add_booking.html', {'form':form, 'submitted':submitted})
-
-# def all_bookings(request):
-#     bookings = Booking.objects.all()
-#     return render(request, 'all_bookings.html', {'bookings': bookings})
-
-# # ------------------------------------------------------------------------------------
 from django.shortcuts import render 
 from rest_framework.views import APIView 
 from . models import *
@@ -34,37 +10,8 @@ from rest_framework.permissions import AllowAny
 
 from rest_framework import status
 
-class AmenityView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        # amenities = Amenity.objects.all()  # Retrieve all amenities from the database
-        # amenity_names = [amenity.name for amenity in amenities]  # Assuming 'name' is the field representing amenity names
-        # return Response(amenity_names)  # Return the list of amenity names as a JSON response
-        amenities = Amenity.objects.all()
-        serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
-        return Response(serializer.data)
-
-
-class BookingView(APIView): 
-    
-    serializer_class = BookingSerializer
-  
-    def get(self, request): 
-        detail = {"name": detail.name,"detail": detail.detail}  
-        # for detail in React.objects.all()] 
-        return Response(detail) 
-  
-    def post(self, request): 
-  
-        serializer = BookingSerializer(data=request.data) 
-        if serializer.is_valid(raise_exception=True): 
-            serializer.save() 
-            return  Response(serializer.data) 
-
-
+# Dummy view to test the connection between the frontend and the backend
+# Feel free to edit this to test new api endpoints
 class DummyView(APIView):
     authentication_classes = []  # No authentication
     permission_classes = [AllowAny]  # Allow any user to access
@@ -77,5 +24,46 @@ class DummyView(APIView):
         return Response(dummy_data)
 
     def post(self, request):
-        # Handle POST request
         pass
+
+class AmenitiesView(APIView):
+    """Returns a list of all amenities in the database for the given shared space."""
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request, community_id=None):
+        if community_id:
+            amenities = Amenity.objects.filter(community__id=community_id) # return amenities for the given shared space
+        else:
+            amenities = Amenity.objects.all() # return all amenities in the database
+        serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
+        return Response(serializer.data)
+
+
+class BookingView(APIView): 
+
+    serializer_class = BookingSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny] # [IsAuthenticated ] User must be authenticated to make a booking
+  
+    def get(self, request, amenity_id=None):
+        """Returns a list of all bookings in the database for a user."""
+        """Or Returns a list of all bookings in the database for the given amenity if amenity id is provided."""
+        if amenity_id:
+            bookings = Booking.objects.filter(amenity=amenity_id)
+        else:
+            user = request.user
+            bookings = Booking.objects.filter(user=user.id)
+        serializer = BookingSerializer(bookings, many=True)
+        return Response(serializer.data)
+  
+    def post(self, request): 
+        serializer = BookingSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            # check if the amenity is already booked
+            if Booking.objects.filter(amenity=request.data['amenity'], date=request.data['date'], start_time=request.data['start_time'], end_time=request.data['end_time']).exists():
+                return Response("The amenity is already booked", status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+        

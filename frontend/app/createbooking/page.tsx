@@ -8,7 +8,6 @@ function CreateBooking() {
   const [selectedAmenity, setSelectedAmenity] = useState('');
   const [date, setDate] = useState('Monday 30 October 2023');
   const [time, setTime] = useState('14:00 - 14:30');
-  const [contactNumber, setContactNumber] = useState('');
   const [reservationNote, setReservationNote] = useState('');
 
   const handleBooking = () => {
@@ -18,9 +17,10 @@ function CreateBooking() {
   const handleAmenitySelection = (selected) => {
     setSelectedAmenity(selected);
   };
+  const sharedSpaceId = 1;
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/amenity/')
+    axios.get(`http://localhost:8000/api/amenities/${sharedSpaceId}/`)
       .then(response => {
         console.log('Response:', response.data);
         setAmenities(response.data);
