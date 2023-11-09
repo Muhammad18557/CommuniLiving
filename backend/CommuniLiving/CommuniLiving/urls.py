@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 # from amenity_booking.views import add_booking, all_bookings
-from amenity_booking.views import AmenityView, BookingView
+from amenity_booking.views import AmenitiesView, BookingView
 from knox import views as knox_views
 from rest_framework.authtoken.views import obtain_auth_token  # Import for token authentication
 from core.views import index, contact, signup, LoginView
