@@ -18,14 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 # from amenity_booking.views import add_booking, all_bookings
 from amenity_booking.views import AmenitiesView, BookingView
-from knox import views as knox_views
 from rest_framework.authtoken.views import obtain_auth_token  # Import for token authentication
-from core.views import index, contact, signup, LoginView
+from core.views import index, contact #, signup, LoginView
 
 urlpatterns = [
     path('', index, name='index'),
     path("accounts/", include("django.contrib.auth.urls")),
-    path('accounts/signup/', signup, name='signup'),
+    # path('accounts/signup/', signup, name='signup'),
     path('contact/', contact, name='contact'),
     path('admin/', admin.site.urls),
     # path('api/your-data/', YourModelAPIView.as_view(), name='your-data-api'),
@@ -36,6 +35,5 @@ urlpatterns = [
     # path('api/booking/', BookingView.as_view(), name="booking_view"),
     # # path('api/amenity/', AmenityView.as_view(), name="amenity_view"),
     # path('api/accounts/signup/', signup, name='signup'),
-    # path('api/accounts/login/', LoginView.as_view(), name='knox_login'),
     path('api/', include('amenity_booking.urls')),
 ]
