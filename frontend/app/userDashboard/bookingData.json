@@ -1,0 +1,18 @@
+[
+    {
+      "id": 1,
+      "name": "Suite G-14",
+      "location": "90 Prospect Street",
+      "members": 6,
+      "amenities": 3,
+      "adminContact": "+1 234 5678"
+    },
+    {
+      "id": 2,
+      "name": "Yale Athletics",
+      "location": "20 Tower Prkway",
+      "members": 8,
+      "amenities": 5,
+      "adminContact": "+1 987 6543"
+    }
+  ]
