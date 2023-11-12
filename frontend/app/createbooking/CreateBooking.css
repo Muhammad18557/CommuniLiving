@@ -12,8 +12,8 @@
 
 .booking-container h1 {
     text-align: center;
-    color: #333;
-    font-size: large;
+    color: #557D71;;
+    font-size: 1.8rem;
     font-weight: bold;
 }
 
@@ -76,7 +76,7 @@
 
 .reservation-notes {
     border-radius: 5px;
-    padding: 10px;
+    padding-bottom: 20px;
     width: 60%;
 }
 
@@ -118,4 +118,10 @@ textarea:focus {
 
 .confirm-booking:hover {
     background-color: #45a049;
+}
+
+
+.booking-date-input {
+    padding: 10px;
+    outline: none;
 }

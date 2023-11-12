@@ -57,16 +57,15 @@ function CreateBooking() {
       </div>
 
       <p className='option-label'>Select date and time</p>
-      <div className="booking-date-input">
-        <label htmlFor="booking-date"></label>
-        <input
-        id="booking-date"
-        className = "booking-date-input"
-        type="datetime-local"
-        name="booking-date"
-        value={getCurrentDateTime()} />
+      <div className='date-and-time'>
+        <div className="date-selection">
+          <input type="text" value={date} onChange={(e) => setDate(e.target.value)} />
+        </div>
+        <div className="time-selection">
+        <input type="text" value={time} onChange={(e) => setTime(e.target.value)} />
+        </div>
       </div>
-      
+  
       <p className='option-label'>Notes for Others</p>
       <div className="reservation-notes">
         <textarea placeholder="Study Session" value={reservationNote} onChange={(e) => setReservationNote(e.target.value)}></textarea>
