@@ -41,6 +41,7 @@ class AmenitiesView(APIView):
         return Response(serializer.data)
 
 
+
 class BookingView(APIView): 
 
     serializer_class = BookingSerializer
@@ -59,10 +60,21 @@ class BookingView(APIView):
         return Response(serializer.data)
   
     def post(self, request): 
+        """ Creates a new booking in the database for an amenity."""
+        print(request.user)
+        # hard coding user for now, to be session authenticated later
+        request.data['user'] = 1
         serializer = BookingSerializer(data=request.data)
+        amenityId = request.data['amenity']
+        date = request.data['date']
+        start_time = request.data['start_time']
+        end_time = request.data['end_time']
+
         if serializer.is_valid(raise_exception=True):
+            print("serializer is valid")
+            # print(serializer.validated_data)
             # check if the amenity is already booked
-            if Booking.objects.filter(amenity=request.data['amenity'], date=request.data['date'], start_time=request.data['start_time'], end_time=request.data['end_time']).exists():
+            if Booking.objects.filter(amenity__id=amenityId, date=date, start_time=start_time, end_time=end_time).exists():
                 return Response("The amenity is already booked", status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

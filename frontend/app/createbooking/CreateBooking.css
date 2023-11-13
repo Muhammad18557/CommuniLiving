@@ -12,8 +12,8 @@
 
 .booking-container h1 {
     text-align: center;
-    color: #333;
-    font-size: large;
+    color: #557D71;;
+    font-size: 1.8rem;
     font-weight: bold;
 }
 
@@ -76,7 +76,7 @@
 
 .reservation-notes {
     border-radius: 5px;
-    padding: 10px;
+    padding-bottom: 20px;
     width: 60%;
 }
 
@@ -118,4 +118,39 @@ textarea:focus {
 
 .confirm-booking:hover {
     background-color: #45a049;
+}
+
+
+.booking-date-input {
+    padding: 10px;
+    outline: none;
+}
+
+.booking-error {
+    color: red;
+    font-weight: bold;
+    margin: 10px;
+    text-align: center;
+}
+.success-booking {
+    /* color: green; */
+    font-weight: bold;
+    margin: 50px;
+    margin-top:100px;
+    text-align: center;
+
+}
+.links-to-dashboard-and-bookings {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 60%;
+    margin-top: 60px;
+}
+.links-to-dashboard-and-bookings a {
+    color: #557D71;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: color 0.3s;
 }

@@ -33,8 +33,9 @@ class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amenity = models.ForeignKey(Amenity, on_delete=models.CASCADE)
     date = models.DateField('Date')
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.amenity.name} booked by {self.user.name}"
+        return f"{self.amenity.name} booked by {self.user.username}"
