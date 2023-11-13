@@ -125,3 +125,32 @@ textarea:focus {
     padding: 10px;
     outline: none;
 }
+
+.booking-error {
+    color: red;
+    font-weight: bold;
+    margin: 10px;
+    text-align: center;
+}
+.success-booking {
+    /* color: green; */
+    font-weight: bold;
+    margin: 50px;
+    margin-top:100px;
+    text-align: center;
+
+}
+.links-to-dashboard-and-bookings {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 60%;
+    margin-top: 60px;
+}
+.links-to-dashboard-and-bookings a {
+    color: #557D71;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
