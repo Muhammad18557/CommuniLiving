@@ -1,16 +1,13 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-// import { initFirebase } from '../../firebase/FirebaseApp';
-// import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInAnonymously, updateProfile } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-
 interface AuthFormProps {
-    isSignUp: boolean;
+  isSignUp: boolean;
 }
 
 export default function AuthForm({ isSignUp }: AuthFormProps) {
@@ -22,148 +19,171 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
   const [successSignIn, setSuccessSignIn] = useState(false);
 
   const router = useRouter();
-//   initFirebase();
-//   const auth = getAuth();
 
   const handleNavigation = () => {
     router.push(isSignUp ? '/login' : '/signup');
-  }
-
-  const handleAnonymousLogin = () => {
-    // signInAnonymously(auth)
-    //   .then(() => {
-    //     console.log('Signed in anonymously');
-    //     router.push('/home');
-    //   })
-    //   .catch((error) => {
-    //     // Handle any errors that occur during the sign-in process.
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     alert('Trouble signing in anonymously. Please try again.');
-    //     // ...
-    //   });
   };
+
+  // const handleAnonymousLogin = async () => {
+  //   // Implement anonymous login logic with your Django backend.
+  //   try {
+  //     const response = await fetch('/api/anonymous-login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+
+  //     if (response.ok) {
+  //       router.push('/home');
+  //     } else {
+  //       const data = await response.json();
+  //       alert(data.error || 'Trouble signing in anonymously. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     alert('An error occurred.');
+  //   }
+  // };
 
   const handleAuthAction = async () => {
     try {
-       if (!email) {
-          alert('Please enter an email');
-          return;
-        }
-        if (!password) {
-          alert('Please enter a password');
-          return;
-        }
+      if (!email || !password) {
+        alert('Please enter both email and password.');
+        return;
+      }
+
+      // const formData = {
+      //   username: email,
+      //   password,
+      //   name: isSignUp ? name : undefined,
+      // };
+
+      let formData = {};
+
       if (isSignUp) {
-        if (!name) {
-          alert('Please enter a name');
-          return;
-        }
-        if (!confirmPassword) {
-          alert('Please confirm your password');
-          return;
-        }
-
-        if (password !== confirmPassword) {
-          setConfirmPassword('');
-          setPassword('');
-          alert('Passwords do not match');
-          return;
-        }
-  
-        // const result = await createUserWithEmailAndPassword(auth, email, password);
-        // await updateProfile(result.user, {
-        //   displayName: name,
-        // });
-
-        setSuccessSignUp(true);
-
-
-      setTimeout(() => {
-        router.push('/');
-      }, 1500);
-        
+        // For signup, include name, email, and password
+        formData = {
+          username: name,
+          email,
+          password,
+        };
       } else {
-        // await signInWithEmailAndPassword(auth, email, password);
-        setSuccessSignIn(true);
-        setEmail('');
-        setPassword('');
+        // For login, use email as username
+        formData = {
+          username: email,
+          password,
+        };
+      }
+      const apiUrl = isSignUp
+      ? 'http://localhost:8000/api/register/' // Replace with your signup API endpoint
+      : 'http://localhost:8000/api/token/'; // Replace with your login API endpoint
+
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
+
+        if (isSignUp) {
+          setSuccessSignUp(true);
+        } else {
+          setSuccessSignIn(true);
+        }
+
         setTimeout(() => {
-        router.push('/login');
-      }, 3000);
+          router.push('/');
+        }, 1500);
+      } else {
+        const data = await response.json();
+        alert(data.non_field_errors || 'An error occurred.');
       }
     } catch (error) {
       console.log(error);
-      if (error.code === 'auth/wrong-password') {
-        alert('Invalid email or password');
-      } else if (error.code === 'auth/user-not-found') {
-        alert('User not found');
-      } else if (error.code === 'auth/email-already-in-use') {
-        alert('Email is already in use');
-      } else {
-        alert('An error occurred');
-      }
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-      setName('');
+      alert('An error occurred.');
     }
+
+    useEffect(() => {
+      if (successSignUp) {
+        setTimeout(() => {
+          // Redirect to the sign-in page after successful registration
+          router.push('/login');
+        }, 1500);
+      }
+    }, [successSignUp]);
   };
-  
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        {!isSignUp && (
+          <div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+          </div>
+          )}
           <img
             className="mx-auto h-10 w-auto"
             src="https://communitylivinginc.org/wp-content/uploads/2016/05/CLI-Logo-cropped.png"
             alt="Your Company"
           />
-          {successSignUp && 
-              <div> 
-                <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          {successSignUp && (
+            <div>
+              <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 <FontAwesomeIcon icon={faSpinner} spin /> Account created successfully.
-                </p>
-                <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+              </p>
+              <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 <FontAwesomeIcon icon={faCheckCircle} spin /> Redirecting to sign-in page...
-                </p>
-            </div> 
-          }
-          {successSignIn && 
-              <div> 
-                <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+              </p>
+            </div>
+          )}
+          {successSignIn && (
+            <div>
+              <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 <FontAwesomeIcon icon={faCheckCircle} spin /> Authentication successful! Redirecting to dashboard ...
-                </p>
-            </div> 
-          }
-          {!successSignUp && !successSignIn && 
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            {isSignUp ? 'Create Account' : 'Sign in to your account'}
-          </h2>
-          }
+              </p>
+            </div>
+          )}
+          {!successSignUp && !successSignIn && (
+            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+              {isSignUp ? 'Create Account' : 'Sign in to your account'}
+            </h2>
+          )}
         </div>
-        {!successSignUp && !successSignIn && 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
-            {isSignUp && (
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Name
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    required
-                    value={name}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    onChange={(e) => setName(e.target.value)}
-                  />
+        {!successSignUp && !successSignIn && (
+          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <form className="space-y-6" action="#" method="POST">
+              {isSignUp && (
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+                    Name
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      autoComplete="name"
+                      required
+                      value={name}
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -188,7 +208,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                   Password
                 </label>
-                {isSignUp && (
+                {!isSignUp && (
                   <div className="text-sm">
                     <a href="#" className="font-semibold text-primary hover:text-secondary">
                       Forgot password?
@@ -230,44 +250,36 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
               </div>
             )}
 
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                onClick={handleAuthAction}
-                disabled={successSignUp || successSignIn}
-              >
-                {isSignUp ? 'Create Account' : 'Sign in'}
-              </button>
-              
-            </div>
-          </form>
+              <div>
+                <button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={handleAuthAction}
+                  disabled={successSignUp || successSignIn}
+                >
+                  {isSignUp ? 'Create Account' : 'Sign in'}
+                </button>
+              </div>
+            </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
-            {isSignUp ? "Already a member? " : "Not a member? "}
-            {/* <a 
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-            onClick={handleNavigation}
-            >
-              {isSignUp ? "Sign In" : "Create Account"}
-            </a> */}
-            <Link href={isSignUp ? "/login" : "/signup"}>
-              <span className="font-semibold leading-6 text-primary hover:text-secondary">
-                {isSignUp ? "Sign In" : "Create Account"}
-              </span>
-            </Link>
-             {/* &nbsp; or &nbsp; 
-            <a 
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-            onClick={handleAnonymousLogin}
-            >
-              Login Anonymously
-            </a> */}
-          </p>
-        </div>
-    }
+            <p className="mt-10 text-center text-sm text-gray-500">
+              {isSignUp ? 'Already a member? ' : 'Not a member? '}
+              <Link href={isSignUp ? '/login' : '/signup'}>
+                <span className="font-semibold leading-6 text-primary hover:text-secondary">
+                  {isSignUp ? 'Sign In' : 'Create Account'}
+                </span>
+              </Link>
+              {/* &nbsp; or &nbsp;
+              <span
+                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+                onClick={handleAnonymousLogin}
+              >
+                Login Anonymously
+              </span> */}
+            </p>
+          </div>
+        )}
       </div>
-      
     </>
   );
 }
