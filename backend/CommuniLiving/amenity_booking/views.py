@@ -16,6 +16,17 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework.decorators import api_view
 
+
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+
+from django.views.decorators.csrf import csrf_exempt
+
+import json
+from django.http import JsonResponse
+
+
 # Dummy view to test the connection between the frontend and the backend
 # Feel free to edit this to test new api endpoints
 class DummyView(APIView):
@@ -105,26 +116,35 @@ class LogoutView(APIView):
           except Exception as e:
                return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class LoginView(APIView):
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
+@csrf_exempt
+def LoginView(request):
+    if request.method == 'POST':
+        try:
+            # Read and parse JSON data from the request body
+            data = json.loads(request.body.decode('utf-8'))
+            username = data['username']
+            password = data['password']
 
-        user = authenticate(
-            username=username, password=password)
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return JsonResponse({'status': 'success'})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Invalid credentials'})
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
         
-        refresh = RefreshToken.for_user(user)
+@csrf_exempt
+def logout_view(request):
+    logout(request)
+    return JsonResponse({'status': 'success'})
 
-        return JsonResponse(
-            {
-               'refresh':str(refresh),
-               'access':str(refresh.access_token) 
-            }
-        )
-
-class RestrictedView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, format=None):
-        return JsonResponse({"response":"USER SIGNED IN - YOU ARE ALLOWED HERE"})
-        
+@csrf_exempt
+def user_info(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'username': request.user.username})
+    else:
+        return JsonResponse({'username': None})

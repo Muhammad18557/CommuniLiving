@@ -57,6 +57,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 ROOT_URLCONF = 'CommuniLiving.urls'
 
 TEMPLATES = [
@@ -88,6 +93,7 @@ DATABASES = {
     }
 }
 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -154,11 +160,17 @@ SIMPLE_JWT = {
 }
 
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8000",
-#     "http://127.0.0.1:8000",
-#     "http://localhost:3000",
-#     "http://127.0.0.1:3000",
-#     # "https://REPLACE_WITH_NAME.com", 
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    # "https://REPLACE_WITH_NAME.com", 
+]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_COOKIE_SECURE = True  # Use HTTPS for session cookies in production
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'None'  # Adjust as needed, e.g., 'Lax' or 'Strict'
+
 

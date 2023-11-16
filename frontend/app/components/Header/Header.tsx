@@ -1,23 +1,50 @@
 "use client";
 
 import React, {useState, useEffect} from 'react'
+import axios from 'axios';
 import Link from 'next/link'; 
 import './Header.css'
 
 function Header() {
     const [click, setClick] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
 
-    const [isAuth, setIsAuth] = useState(false);
-    useEffect(() => {
-      if (localStorage.getItem('access_token') !== null) {
-         setIsAuth(true); 
-       }
-     }, [isAuth]);
+    // useEffect(() => {
+    //     // Check user authentication status on component mount
+    //     checkUserAuthentication();
+    // }, []);
 
+    const checkUserAuthentication = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/user_info/');
 
+            if (response.data.username) {
+                setIsLoggedIn(true);
+            } else {
+                setIsLoggedIn(false);
+            }
+        } catch (error) {
+            console.error('Error checking user authentication:', error);
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+          // Perform the logout API request or action here
+          await axios.post('http://localhost:8000/api/logout/');
+          localStorage.removeItem('access_token');
+          setIsLoggedIn(false);
+          closeMobileMenu();
+        } catch (error) {
+          console.error('Error during logout:', error);
+        }
+      };
+
+      
   return (
     <nav>
     <div className='header-container'>
@@ -37,27 +64,11 @@ function Header() {
                 <li className='menu-item'> <Link href='/' className='menu-links' onClick={closeMobileMenu}> Admin</Link></li>
                 {/* <li className='menu-item'> <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link></li> */}
                 <li className='menu-item'>
-                    {isAuth ? (
+                    {isLoggedIn ? (
                         // If user is authenticated, show logout button
-                        // <li className='menu-item'> <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link></li>
-                        <button className='logout-button' onClick={() => {
-                            // Handle logout logic here (e.g., clear localStorage, update state)
-                            localStorage.removeItem('access_token');
-                            setIsAuth(false);
-                            closeMobileMenu();
-                        }}>
-                            Logout
-                        </button>
-                        // <li className='menu-item'> <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button' onClick={() => {
-                        //         localStorage.removeItem('access_token');
-                        //         setIsAuth(false);
-                        //         closeMobileMenu();
-                        //     }}>
-                        //         Logout
-                        //     </button></Link></li>
+                        <Link href='/login' className='menu-links' onClick={handleLogout}> <button className='login-button'>Log Out</button></Link>
                     ) : (
-                        // If user is not authenticated, show login button
-                        <li className='menu-item'> <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link></li>
+                        <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link>
                     )}
                 </li>
             </ul>

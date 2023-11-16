@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import Cookies from 'js-cookie';
+
 
 interface AuthFormProps {
   isSignUp: boolean;
@@ -46,6 +48,13 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
   //   }
   // };
 
+  const getCSRFToken = () => {
+    return Cookies.get('csrftoken');
+  };
+
+  // Example usage
+  const csrfToken = getCSRFToken();
+
   const handleAuthAction = async () => {
     try {
       if (!email || !password) {
@@ -77,21 +86,22 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
       }
       const apiUrl = isSignUp
       ? 'http://localhost:8000/api/register/' // Replace with your signup API endpoint
-      : 'http://localhost:8000/api/token/'; // Replace with your login API endpoint
+      : 'http://localhost:8000/api/login/'; // Replace with your login API endpoint
 
 
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('access_token', data.access);
-        localStorage.setItem('refresh_token', data.refresh);
+        // localStorage.setItem('access_token', data.access);
+        // localStorage.setItem('refresh_token', data.refresh);
 
         if (isSignUp) {
           setSuccessSignUp(true);
@@ -110,6 +120,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
       console.log(error);
       alert('An error occurred.');
     }
+    };
 
     useEffect(() => {
       if (successSignUp) {
@@ -119,7 +130,6 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
         }, 1500);
       }
     }, [successSignUp]);
-  };
 
   return (
     <>
