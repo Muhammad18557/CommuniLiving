@@ -22,7 +22,7 @@ export const Login = () => {
           }
         }
       );
-
+      
       const { data } = response;
 
       // Store tokens in local storage

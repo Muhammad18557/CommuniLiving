@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     communities = models.ManyToManyField('Community', related_name='user_profiles', blank=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.username + " - " + self.user.email + " - " + str(self.user.id)
 
 class Community(models.Model):
     """A cummunity is an apartment/suite etc that has multiple amenities."""
