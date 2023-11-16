@@ -8,21 +8,23 @@ export const UserDashboard = () => {
     <div className="user-dashboard-page">
       <div className="div">
         <div className="page-intro">
-          <div className="page-title">User Dashboard</div>
-          <div className="page-info">Here are your communities.</div>
+          <div className="page-title"><h1>User Dashboard</h1></div>
+          <div className="page-info"><h5>Here are your communities</h5></div>
         </div>
       </div>
-
-      {bookingData.map((booking) => (
-        <BookingCard
-          key={booking.id}
-          name={booking.name}
-          location={booking.location}
-          members={booking.members}
-          amenities={booking.amenities}
-          adminContact={booking.adminContact}
-        />
-      ))}
+      <div className='card-container'>
+        {bookingData.map((booking) => (
+          <BookingCard
+            key={booking.id}
+            name={booking.name}
+            location={booking.location}
+            members={booking.members}
+            amenities={booking.amenities}
+            adminContact={booking.adminContact}
+          />
+        ))}
+      </div>
+      
     </div>
 
   );
