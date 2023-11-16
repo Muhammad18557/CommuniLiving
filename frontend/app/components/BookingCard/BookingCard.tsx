@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import PropTypes from 'prop-types';
+import './BookingCard.css';
 
 interface BookingCardProps {
   name: string;

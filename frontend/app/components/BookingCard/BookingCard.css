@@ -1,0 +1,39 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px;
+  }
+  
+  .text-wrapper {
+    background-color: #89a181;
+    color: white;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .location,
+  .members,
+  .amenities,
+  .adminContact {
+    margin-bottom: 8px;
+  }
+  
+  .span {
+    font-weight: bold;
+  }
+  
+  .text-wrapper-2 {
+    margin-left: 8px;
+  }
+  
+  .text-wrapper-3 {
+    color: #89a181;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
