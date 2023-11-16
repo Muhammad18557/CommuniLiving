@@ -96,8 +96,9 @@ class BookingView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
-@api_view(['POST'])
+@csrf_exempt
 def register_user(request):
+    print("here")
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -136,7 +137,7 @@ def LoginView(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-        
+
 @csrf_exempt
 def logout_view(request):
     logout(request)

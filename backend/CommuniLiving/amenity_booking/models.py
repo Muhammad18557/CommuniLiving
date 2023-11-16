@@ -39,3 +39,15 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.amenity.name} booked by {self.user.username}"
+
+    def __str__(self):
+        return f"{self.amenity.name} booked by {self.user.username}"
+
+
+class Message(models.Model):
+    """A Message is a reservation of an amenity by a user."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField('Date')
+    community = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+
