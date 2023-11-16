@@ -4,11 +4,17 @@ from . models import *
 from rest_framework.response import Response 
 from . serializers import *
 
+from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 
 from rest_framework import status
+from rest_framework.decorators import api_view
 
 # Dummy view to test the connection between the frontend and the backend
 # Feel free to edit this to test new api endpoints
@@ -39,7 +45,6 @@ class AmenitiesView(APIView):
             amenities = Amenity.objects.all() # return all amenities in the database
         serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
         return Response(serializer.data)
-
 
 
 class BookingView(APIView): 
@@ -80,6 +85,13 @@ class BookingView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
+@api_view(['POST'])
+def register_user(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
      permission_classes = (IsAuthenticated,)
@@ -92,4 +104,27 @@ class LogoutView(APIView):
                return Response(status=status.HTTP_205_RESET_CONTENT)
           except Exception as e:
                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(
+            username=username, password=password)
+        
+        refresh = RefreshToken.for_user(user)
+
+        return JsonResponse(
+            {
+               'refresh':str(refresh),
+               'access':str(refresh.access_token) 
+            }
+        )
+
+class RestrictedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        return JsonResponse({"response":"USER SIGNED IN - YOU ARE ALLOWED HERE"})
         
