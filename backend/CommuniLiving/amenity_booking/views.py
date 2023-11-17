@@ -26,6 +26,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 
+from .forms import SignupForm
+
 
 # Dummy view to test the connection between the frontend and the backend
 # Feel free to edit this to test new api endpoints
@@ -96,14 +98,14 @@ class BookingView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
-@csrf_exempt
-def register_user(request):
-    print("here")
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @csrf_exempt
+# def register_user(request):
+#     print("here")
+#     serializer = UserSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
      permission_classes = (IsAuthenticated,)
@@ -149,3 +151,38 @@ def user_info(request):
         return JsonResponse({'username': request.user.username})
     else:
         return JsonResponse({'username': None})
+
+# @csrf_exempt
+# def register_user(request):
+#     if request.method == 'POST':
+#         form = SignupForm(request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data.get('username')
+#             email = form.cleaned_data.get('email')
+#             password = form.cleaned_data.get('password')
+#             User.objects.create_user(username=username, email=email, password=password)
+#             return redirect('edit-profile')
+#         else:
+#             form = SignupForm()
+
+#         context = {
+#             'form':form,
+#         }
+
+#     return render(request, 'registration/signup.html', context)
+
+@csrf_exempt
+def register_user(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            username = data['name']
+            email = data['email']
+            password = data['password']
+            print(username, email, password)
+            User.objects.create_user(username=username, email=email, password=password)
+            return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)

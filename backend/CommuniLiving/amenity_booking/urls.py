@@ -1,4 +1,4 @@
-from amenity_booking.views import AmenitiesView, BookingView, DummyView, register_user, LoginView, logout_view, user_info
+from amenity_booking.views import AmenitiesView, BookingView, DummyView, LoginView, logout_view, user_info, register_user
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
 

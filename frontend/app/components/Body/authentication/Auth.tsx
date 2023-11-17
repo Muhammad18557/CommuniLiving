@@ -76,6 +76,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
           username: name,
           email,
           password,
+          confirmpassword,
         };
       } else {
         // For login, use email as username
