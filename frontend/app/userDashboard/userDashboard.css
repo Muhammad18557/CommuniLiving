@@ -6,20 +6,21 @@
   }
   
   .page-intro {
-    padding-top: 20px; 
+    padding-top: 20%; 
     margin-bottom: 20px; 
     text-align: center;
   }
   
   .page-title {
-    padding-top: 20%;
-    font-size: 3rem;
-    margin-bottom: 10px;
-    color: #53775F;
+    padding-top: 30%;
+    text-align: center;
+    color: #557D71;;
+    font-size: 1.8rem;
     font-weight: bold;
   }
   
   .page-info {
+    margin-top: 30px;
     font-size: 16px;
   }
   
