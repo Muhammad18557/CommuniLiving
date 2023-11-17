@@ -48,6 +48,6 @@ class Message(models.Model):
     """A Message is a reservation of an amenity by a user."""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField('Date')
-    # community = models.ForeignKey(User, on_delete=models.CASCADE)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, default=1)
     message = models.TextField(blank=True)
 

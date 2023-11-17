@@ -85,6 +85,28 @@ class TimeTableView(APIView):
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
 
+class MessageView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request, community_id=None):
+        """Returns all bookings for a specific day."""
+        # if 'community' not in request.query_params:
+        #     return Response({"error": "Community parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # try:
+        #     community = parse_date(request.query_params['community'])
+        # except ValueError:
+        #     return Response({"error": "Invalid community format"}, status=status.HTTP_400_BAD_REQUEST)
+        community_id = 1
+
+        if community_id:
+            messages = Message.objects.filter(community=community_id)
+        else:
+            return Response({"error": "Community ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)
 
 class BookingView(APIView): 
 

@@ -29,4 +29,12 @@ class BookingSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         return Booking.objects.create(**validated_data)
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
+    
+    def create(self, validated_data):
+        return Message.objects.create(**validated_data)
         
