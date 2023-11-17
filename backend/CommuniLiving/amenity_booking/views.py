@@ -27,6 +27,7 @@ import json
 from django.http import JsonResponse
 
 from .forms import SignupForm
+from datetime import date, timedelta
 
 
 # Dummy view to test the connection between the frontend and the backend
@@ -57,6 +58,31 @@ class AmenitiesView(APIView):
         else:
             amenities = Amenity.objects.all() # return all amenities in the database
         serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
+        return Response(serializer.data)
+
+class TimeTableView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request, amenity_id=None):
+        """Returns all bookings for a specific day."""
+        curr_date = str(date.today()-timedelta(days=2))
+        print(curr_date)
+        # if 'date' not in request.query_params:
+        #     return Response({"error": "Date parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # try:
+        #     date = parse_date(request.query_params['date'])
+        # except ValueError:
+        #     return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if amenity_id:
+            bookings = Booking.objects.filter(amenity=amenity_id, date=curr_date)
+        else:
+            user = request.user
+            bookings = Booking.objects.filter(date=curr_date)
+
+        serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
 
 
