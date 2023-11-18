@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import './BookingCard.css';
+import Link from 'next/link';
 
 interface BookingCardProps {
   name: string;
@@ -42,7 +43,9 @@ name,
             <br />
         </span>
     </p>
-    <div className="text-wrapper-3">Open community dashboard</div>
+    <div className="text-wrapper-3"> 
+    <Link href='/createbooking'> Open community booking page </Link>
+    </div>
     </div>
     
 

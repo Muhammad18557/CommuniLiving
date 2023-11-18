@@ -2,17 +2,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
+    /* padding-top: 20px; */
   }
   
   .page-intro {
-    padding-top: 20%; 
+    /* padding-top: 20%;  */
     margin-bottom: 20px; 
     text-align: center;
   }
   
   .page-title {
-    padding-top: 30%;
+    padding-top: 20%;
     text-align: center;
     color: #557D71;;
     font-size: 1.8rem;
