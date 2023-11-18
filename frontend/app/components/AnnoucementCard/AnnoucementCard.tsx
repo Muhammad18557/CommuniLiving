@@ -21,18 +21,19 @@ name,
 }) => (
     (
         <div className="label">
-          <p className="card">
-            <span className="text-wrapper">
+          <div className="card">
+            <div className="text-wrapper">
               {name} | {person}
               <br />
-            </span>
-            <span className="span">
+            </div>
+            
+            <div className="span">
               {message}
               <br />
               <br />
              {phone} | {mail} | {date}
-            </span>
-          </p>
+            </div>
+          </div>
         </div>
       )
 
