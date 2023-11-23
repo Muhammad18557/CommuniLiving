@@ -7,7 +7,6 @@ import { faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Cookies from 'js-cookie';
 
-
 interface AuthFormProps {
   isSignUp: boolean;
 }
@@ -20,33 +19,14 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
   const [successSignUp, setSuccessSignUp] = useState(false);
   const [successSignIn, setSuccessSignIn] = useState(false);
 
+  // new code:
+  // const { login } = useAuth();
+
   const router = useRouter();
 
   const handleNavigation = () => {
     router.push(isSignUp ? '/login' : '/signup');
   };
-
-  // const handleAnonymousLogin = async () => {
-  //   // Implement anonymous login logic with your Django backend.
-  //   try {
-  //     const response = await fetch('/api/anonymous-login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       router.push('/home');
-  //     } else {
-  //       const data = await response.json();
-  //       alert(data.error || 'Trouble signing in anonymously. Please try again.');
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     alert('An error occurred.');
-  //   }
-  // };
 
   const getCSRFToken = () => {
     return Cookies.get('csrftoken');
@@ -61,13 +41,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
         alert('Please enter both email and password.');
         return;
       }
-
-      // const formData = {
-      //   username: email,
-      //   password,
-      //   name: isSignUp ? name : undefined,
-      // };
-
+      
       let formData = {};
 
       if (isSignUp) {
@@ -76,7 +50,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
           username: name,
           email,
           password,
-          confirmpassword,
+          confirmPassword,
         };
       } else {
         // For login, use email as username
@@ -100,6 +74,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
       });
 
       if (response.ok) {
+
         const data = await response.json();
         // localStorage.setItem('access_token', data.access);
         // localStorage.setItem('refresh_token', data.refresh);
@@ -107,6 +82,9 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
         if (isSignUp) {
           setSuccessSignUp(true);
         } else {
+          // login();
+          console.log('login successful')
+          console.log(csrfToken)
           setSuccessSignIn(true);
         }
 
@@ -280,13 +258,6 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
                   {isSignUp ? 'Sign In' : 'Create Account'}
                 </span>
               </Link>
-              {/* &nbsp; or &nbsp;
-              <span
-                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                onClick={handleAnonymousLogin}
-              >
-                Login Anonymously
-              </span> */}
             </p>
           </div>
         )}

@@ -25,8 +25,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 import json
 from django.http import JsonResponse
-
-from .forms import SignupForm
 from datetime import date, timedelta
 
 
@@ -167,20 +165,32 @@ class LogoutView(APIView):
           except Exception as e:
                return Response(status=status.HTTP_400_BAD_REQUEST)
 
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 @csrf_exempt
 def LoginView(request):
     if request.method == 'POST':
         try:
-            # Read and parse JSON data from the request body
             data = json.loads(request.body.decode('utf-8'))
             username = data['username']
             password = data['password']
 
             user = authenticate(request, username=username, password=password)
-
             if user is not None:
                 login(request, user)
-                return JsonResponse({'status': 'success'})
+                # Include additional user info in the response
+                user_info = {
+                    'username': user.username,
+                    # Include other fields as needed
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    # etc.
+                }
+                return JsonResponse({'status': 'success', 'user': user_info})
             else:
                 return JsonResponse({'status': 'error', 'message': 'Invalid credentials'})
         except json.JSONDecodeError as e:
