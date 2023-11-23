@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import '../dummy/dummy.css';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 function DummyLogin() {
   const [username, setUsername] = useState('');
@@ -22,34 +23,39 @@ function DummyLogin() {
     const csrfToken = Cookies.get('csrftoken'); // Replace with your method of getting CSRF token, if applicable
 
     try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken, // If you are using CSRF tokens
-        },
-        body: JSON.stringify({ username, password }),
-      });
+        const response = await axios.post(apiUrl, { username, password }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            }
+        });
 
-      if (response.ok) {
-        // Handle successful login here
-        const data = await response.json();
-        console.log('Response:', data);
-        if (data.status == 'success') {
-          console.log('login successful')
-          const userData = data.user;
-          console.log(userData)
-
+        if (response.status === 200) {
+            // Handle successful login here
+            const data = response.data;
+            console.log('Response:', data);
+            if (data.status === 'success') {
+                console.log('login successful');
+                const userData = data.user;
+                console.log(userData);
+            }
+            else {
+                console.log('login failed with this message:', data.message);
+            }
+        } else {
+            // Handle errors here
+            console.error('Login failed:', response.statusText);
         }
-        // Redirect or update UI as needed
-      } else {
-        // Handle errors here
-        console.error('Login failed:', response.statusText);
-      }
     } catch (error) {
-      console.error('Error submitting form:', error);
+        if (axios.isAxiosError(error)) {
+            // Handle Axios-specific error
+            console.error('Axios error:', error.message);
+        } else {
+            // Handle other errors
+            console.error('Error submitting form:', error);
+        }
     }
-  };
+};
 
   return (
     <div>
