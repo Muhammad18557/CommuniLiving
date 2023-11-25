@@ -1,0 +1,42 @@
+.user-dashboard-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* padding-top: 20px; */
+  }
+  
+  .page-intro {
+    /* padding-top: 20%;  */
+    margin-bottom: 20px; 
+    text-align: center;
+  }
+  
+  .page-title {
+    padding-top: 20%;
+    text-align: center;
+    color: #557D71;;
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+  
+  .page-info {
+    margin-top: 30px;
+    font-size: 16px;
+  }
+  
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    flex-direction: row;
+  }
+  
+  .card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    width: calc(33.33% - 20px);
+    flex: 0 0 auto;
+    box-sizing: border-box;
+  }

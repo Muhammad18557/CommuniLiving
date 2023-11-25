@@ -1,0 +1,32 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <title>{% block title %}{% endblock %} | CommuniLiving</title> 
+    </head>
+
+    <body>
+        <nav class="py-6 px-6 flex justify-between itemrs-center border-b border-gray-200">
+            <a href="/" class="text-xl font-semibold">CommuniLiving</a>
+        
+            <div class="space-x-6">
+                <a href="{% url 'add_booking' %}" class="text-lg font-semibold hover:text-gray-500">New Booking</a>
+                <a href="{% url 'all_bookings' %}" class="text-lg font-semibold hover:text-gray-500">List Bookings</a>
+            
+                <a href="{% url 'signup' %}" class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:gb-teal-700">Sign Up</a>
+                <a href="{% url 'login' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:gb-gray-700">Log In</a>
+            </div>
+        </nav>
+            
+        <div class=""px-6 py-6>
+            {% block content %}
+            {% endblock %}
+        </div>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> -->
+    </body> 
+</html>

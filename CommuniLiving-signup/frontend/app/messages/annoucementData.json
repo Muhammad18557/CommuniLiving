@@ -1,0 +1,30 @@
+[
+    {
+      "id": 1,
+      "name": "G-14D",
+      "person": "Sanji Ramesh Chandran",
+      "message": "Hi everyone, I will be inviting a friend over this upcoming weekend. Please let me know if any issues!",
+      "phone": "+65 9104 1625",
+      "mail": "sanjit.rameshchandran@yale.edu",
+      "date": "Tue 14 Nov 4:40PM"
+    },
+    {
+        "id": 2,
+        "name": "Yale Cricket Team",
+        "person": "Abdullah",
+        "message": "I will be hosting a party in the games room on Wednesday, to celebrate my 100th 100 runs. I have already booked the space, but want to let all know that the party might get crazy, so please excuse the noise",
+        "phone": "+1 2345 6789",
+        "mail": "abduallah.thegoat@yalecricketdreamteam.edu",
+        "date": "Tue 14 Nov 10:17AM"
+      },
+      {
+        "id": 3,
+        "name": "Sig Chi Fraternity",
+        "person": "You",
+        "message": "Can someone clean up the living room, it’s a mess from Saturday’s rager.",
+        "phone": "+9 8765 4321",
+        "mail": "woah.what@beer4life.com",
+        "date": "Sunday 12 Nov 1:23PM"
+      }
+  ]
+  

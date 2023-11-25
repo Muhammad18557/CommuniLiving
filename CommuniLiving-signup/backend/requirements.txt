@@ -1,0 +1,5 @@
+django ~= 4.2.6
+djangorestframework ~= 3.14.0
+django-cors-headers ~= 4.3.0
+django-rest-knox
+rest_framework_simplejwt
