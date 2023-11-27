@@ -1,10 +1,17 @@
-import React from "react";
+// import React from "react";
+// import BookingCard from '../components/BookingCard/BookingCard';
+// import "./userDashboard.css";
+// import bookingData from './bookingData.json';
+// import Link from 'next/link'; 
+"use client";
+import React from 'react';
+import { useAuth } from '../components/Body/authentication/AuthContext';
 import BookingCard from '../components/BookingCard/BookingCard';
-import "./userDashboard.css";
 import bookingData from './bookingData.json';
-import Link from 'next/link'; 
+import Link from 'next/link';
+import './userDashboard.css';
 
-export const UserDashboard = () => {
+export const Dashboard = () => {
   return (
     <div className="user-dashboard-page">
       <div className="div">
@@ -34,4 +41,34 @@ export const UserDashboard = () => {
   );
 };
 
+// export default Dashboard;
+
+export const UserDashboard = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="user-dashboard-page">
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
+      </div>
+    );
+  }
+
+  return (
+   <Dashboard />
+  );
+};
+
 export default UserDashboard;
+
+
+

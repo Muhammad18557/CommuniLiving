@@ -1,49 +1,29 @@
 "use client";
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, use} from 'react'
 import axios from 'axios';
 import Link from 'next/link'; 
 import './Header.css'
+import { useAuth } from '../Body/authentication/AuthContext';
 
 function Header() {
     const [click, setClick] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
-
-    // useEffect(() => {
-    //     // Check user authentication status on component mount
-    //     checkUserAuthentication();
-    // }, []);
-
-    const checkUserAuthentication = async () => {
-        try {
-            const response = await axios.get('http://localhost:8000/api/user_info/');
-
-            if (response.data.username) {
-                setIsLoggedIn(true);
-            } else {
-                setIsLoggedIn(false);
-            }
-        } catch (error) {
-            console.error('Error checking user authentication:', error);
-        }
+      
+      const { user, logout } = useAuth();
+      useEffect(() => {
+        // Check user authentication status on component mount
+        setIsLoggedIn(user ? true : false);
+      }
+        , [user]);
+      
+    const handleLogout = () =>{
+        logout();
     };
-
-    const handleLogout = async () => {
-        try {
-          // Perform the logout API request or action here
-          await axios.post('http://localhost:8000/api/logout/');
-          localStorage.removeItem('access_token');
-          setIsLoggedIn(false);
-          closeMobileMenu();
-        } catch (error) {
-          console.error('Error during logout:', error);
-        }
-      };
-
+        
       
   return (
     <nav>

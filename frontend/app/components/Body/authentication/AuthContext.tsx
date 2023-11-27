@@ -1,30 +1,29 @@
-import { createContext, useContext, useState } from 'react';
+"use client";
+import React, { createContext, useContext, useState } from 'react';
 
-interface AuthContextType {
-  isAuthenticated: boolean;
-  login: () => void;
-  logout: () => void;
-}
+const AuthContext = createContext(null);
 
-const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
-  login: () => {},
-  logout: () => {},
-});
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+    const login = (userData) => {
+        console.log('login function called');
+        console.log(userData);
+        setUser(userData);
+        // Store token in localStorage or handle cookie
+    };
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const logout = () => {
+        console.log('logout function called');
+        setUser(null);
+        // Clear token from localStorage or handle cookie
+    };
 
-  const login = () => setIsAuthenticated(true);
-  const logout = () => setIsAuthenticated(false);
+    return (
+        <AuthContext.Provider value={{ user, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
+export const useAuth = () => useContext(AuthContext);

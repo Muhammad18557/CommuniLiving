@@ -3,10 +3,13 @@ import React, { useState } from 'react';
 import '../dummy/dummy.css';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useAuth } from '../components/Body/authentication/AuthContext';
 
 function DummyLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const { login } = useAuth();
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -39,6 +42,7 @@ function DummyLogin() {
                 console.log('login successful');
                 const userData = data.user;
                 console.log(userData);
+                login(userData); // added this line
                 console.log('this is what the cookies have now');
                 console.log(Cookies.get());
                 // console.log('this is what the username cookie has now');
