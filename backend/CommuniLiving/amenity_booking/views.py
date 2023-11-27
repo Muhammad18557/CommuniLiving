@@ -247,3 +247,35 @@ def register_user(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def AddUserCommunity(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            username = data['user']
+            community_pass = data['community_pass']
+
+            # username = 'thomas'
+            # community_pass = '942767'
+
+            try:
+                # print(Community.objects.get(join_pass=091786))
+                community = Community.objects.get(join_pass=community_pass)
+            except Community.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Invalid community pass'}, status=400)
+
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'User not found'}, status=400)
+
+            user_profile, created = UserProfile.objects.get_or_create(user=user)
+            user_profile.communities.add(community)
+            print(user_profile.get_communities())
+
+            return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)

@@ -1,4 +1,4 @@
-from amenity_booking.views import AmenitiesView, BookingView, DummyView, LoginView, logout_view, user_info, register_user, TimeTableView, MessageView
+from amenity_booking.views import AmenitiesView, BookingView, DummyView, LoginView, logout_view, user_info, register_user, TimeTableView, MessageView, AddUserCommunity
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
 
@@ -11,6 +11,7 @@ urlpatterns = [
     # path('token/', jwt_views.TokenObtainPairView.as_view(), name ='token_obtain_pair'),
     # path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name ='token_refresh'),
     # path('restricted/', RestrictedView.as_view(), name ='restricted'),
+    path('add_user_community', AddUserCommunity, name='add_user_community'),
     path('login/', LoginView, name ='login'),
     path('logout/', logout_view, name ='logout'),
     path('user_info/', user_info, name ='user_info'),
