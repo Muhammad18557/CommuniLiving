@@ -272,6 +272,7 @@ def AddUserCommunity(request):
 
             user_profile, created = UserProfile.objects.get_or_create(user=user)
             user_profile.communities.add(community)
+            # user_profile.communities.remove(community)
             print(user_profile.get_communities())
 
             return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
