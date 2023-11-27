@@ -24,6 +24,7 @@ function DummyLogin() {
 
     try {
         const response = await axios.post(apiUrl, { username, password }, {
+            withCredentials: true,
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken,
@@ -38,6 +39,12 @@ function DummyLogin() {
                 console.log('login successful');
                 const userData = data.user;
                 console.log(userData);
+                console.log('this is what the cookies have now');
+                console.log(Cookies.get());
+                // console.log('this is what the username cookie has now');
+                console.log(Cookies.get('username'));
+                console.log(Cookies.get('sessionid'));
+                console.log(Cookies.get('csrftoken'));
             }
             else {
                 console.log('login failed with this message:', data.message);

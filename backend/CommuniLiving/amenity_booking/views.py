@@ -186,11 +186,14 @@ def LoginView(request):
                     'username': user.username,
                     # Include other fields as needed
                     'email': user.email,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
                     # etc.
                 }
-                return JsonResponse({'status': 'success', 'user': user_info})
+                response = JsonResponse({'status': 'success', 'user': user_info})
+                response.set_cookie('csrftoken', get_token(request))
+                print(request.session)
+                response.set_cookie('sessionid', request.session, httponly=False, secure=False)
+                response.set_cookie('username', user.username, httponly=False, secure=False)
+                return response
             else:
                 return JsonResponse({'status': 'error', 'message': 'Invalid credentials'})
         except json.JSONDecodeError as e:

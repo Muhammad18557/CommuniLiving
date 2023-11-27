@@ -167,6 +167,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     # "https://REPLACE_WITH_NAME.com", 
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_COOKIE_SECURE = True  # Use HTTPS for session cookies in production
