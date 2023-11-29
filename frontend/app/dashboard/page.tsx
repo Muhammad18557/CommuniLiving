@@ -10,6 +10,7 @@ import BookingCard from '../components/BookingCard/BookingCard';
 import bookingData from './bookingData.json';
 import Link from 'next/link';
 import './userDashboard.css';
+import DummyLogin from '../dummylogin/page';
 
 export const Dashboard = () => {
   return (
@@ -43,32 +44,30 @@ export const Dashboard = () => {
 
 // export default Dashboard;
 
-export const UserDashboard = () => {
-  const { user } = useAuth();
+// export const UserDashboard = () => {
+//   const { user } = useAuth();
 
-  if (!user) {
-    return (
-      <div className="user-dashboard-page">
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-        <p>You are not logged in. Please <Link href="/dummylogin">log in</Link> to access the dashboard.</p>
-      </div>
-    );
-  }
+//   if (!user) {
+//     return (
+//       <DummyLogin />
+//     );
+//   }
+//   return (
+//    <Dashboard />
+//   );
+// };
 
+// export default UserDashboard;
+
+
+import withAuthProtection from '../components/Body/authentication/HOC';
+
+const UserDashboard = () => {
   return (
-   <Dashboard />
+    <Dashboard />
   );
 };
 
-export default UserDashboard;
-
+export default withAuthProtection(UserDashboard);
 
 
