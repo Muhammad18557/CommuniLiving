@@ -1,6 +1,8 @@
 "use client";
 import axios from "axios";
 import { useState } from "react";
+import './login.css';
+
 
 export const Login = () => {
   const [username, setUsername] = useState('');
@@ -44,9 +46,11 @@ export const Login = () => {
     <div className="Auth-form-container">
       <br></br>
       <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
+      <img
+            className="logo-image"
+            src="https://communitylivinginc.org/wp-content/uploads/2016/05/CLI-Logo-cropped.png"
+            alt="Your Company"
+          />
       <br></br>
       <br></br>
       <form className="Auth-form" onSubmit={submit}>
