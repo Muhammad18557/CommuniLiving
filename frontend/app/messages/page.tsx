@@ -56,7 +56,7 @@ export const AnnoucementDashboard = () => {
 
   // const { currentUser } = useAuth();
 
-  const currentUser = { username: 'thomas' }; // Default to 'test' if no user is logged in
+  const currentUser = { username: 'admin' }; // Default to 'test' if no user is logged in
 
   useEffect(() => {
     setIsLoading(true);
@@ -78,8 +78,8 @@ export const AnnoucementDashboard = () => {
 
   const postAnnouncement = () => {
     axios.post("http://localhost:8000/api/message/", {
-      "user": currentUser.username, // corrected typo
-      "community": "test",
+      "username": currentUser.username, 
+      "community_name": "G14",
       "message": newAnnouncement,
     })
     .then(response => {

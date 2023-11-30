@@ -4,7 +4,9 @@
 // import bookingData from './bookingData.json';
 // import Link from 'next/link'; 
 "use client";
+import { useState } from 'react';
 import React from 'react';
+import axios from 'axios';
 import { useAuth } from '../components/Body/authentication/AuthContext';
 import BookingCard from '../components/BookingCard/BookingCard';
 import bookingData from './bookingData.json';
@@ -13,6 +15,26 @@ import './userDashboard.css';
 import DummyLogin from '../dummylogin/page';
 
 export const Dashboard = () => {
+  const [communityCode, setCommunityCode] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevents the default form submission
+
+    // Axios POST request
+    axios.post('http://localhost:8000/api/add_user_community/', {
+      user: "admin",
+      community_pass: communityCode
+    })
+    .then(response => {
+      console.log(response.data);
+      // Handle successful response
+    })
+    .catch(error => {
+      console.error('Error posting data', error);
+      // Handle error
+    });
+};
+
   return (
     <div className="user-dashboard-page">
       <div className="div">
@@ -36,6 +58,21 @@ export const Dashboard = () => {
           />
         ))}
       </div>
+
+      <div>
+        <form onSubmit={handleSubmit}>
+        <label htmlFor="communityCode">Community Code</label>
+        <input 
+          type="text" 
+          id="communityCode" 
+          name="communityCode" 
+          value={communityCode}
+          onChange={(e) => setCommunityCode(e.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
+      </div>
+
       
     </div>
 

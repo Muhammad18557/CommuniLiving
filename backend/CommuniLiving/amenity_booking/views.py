@@ -119,19 +119,30 @@ def MessageView(request):
                 community = Community.objects.get(name=community_name)
             except Community.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'Community not found'})
-
+            
+            user_profile = UserProfile.objects.get(user__username=username)
+            user = user_profile.user
 
             if username and community and message:
                 # curr_date = str(date.today())
 
-                Message.objects.create(
+                new_message = Message.objects.create(
                     user=user,
                     date=date.today(),
                     community=community,  # Assuming you want to associate the message with the first community
-                    message=new_message_content
+                    message=message
                 )
+                # return JsonResponse({'status': 'success', 'id': -1, 'community': community.name, 'user':username, 'date': date, 'message': message})
+                formatted_date = new_message.date.strftime("%Y-%m-%d")
 
-                return JsonResponse({'status': 'success', 'message': 'Data received successfully'})
+                return JsonResponse({
+                    'status': 'success', 
+                    'id': new_message.id, 
+                    'community': community.name, 
+                    'user': username, 
+                    'date': formatted_date, 
+                    'message': message
+                })
             else:
                 return JsonResponse({'status': 'error', 'message': 'Missing required data'})
         except json.JSONDecodeError as e:
@@ -324,7 +335,10 @@ def register_user(request):
 
 @csrf_exempt
 def AddUserCommunity(request):
+    print("i am being called")
     if request.method == 'POST':
+        print("i am being called")
+        print(request.body)
         try:
             data = json.loads(request.body.decode('utf-8'))
             username = data['user']
