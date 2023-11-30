@@ -83,28 +83,97 @@ class TimeTableView(APIView):
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
 
-class MessageView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [AllowAny]
+# class MessageView(APIView):
+#     authentication_classes = [SessionAuthentication, BasicAuthentication]
+#     permission_classes = [AllowAny]
 
-    def get(self, request, community_id=None):
-        """Returns all bookings for a specific day."""
-        # if 'community' not in request.query_params:
-        #     return Response({"error": "Community parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
+#     def get(self, request, community_id=None):
+#         """Returns all bookings for a specific day."""
+#         # if 'community' not in request.query_params:
+#         #     return Response({"error": "Community parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # try:
-        #     community = parse_date(request.query_params['community'])
-        # except ValueError:
-        #     return Response({"error": "Invalid community format"}, status=status.HTTP_400_BAD_REQUEST)
-        community_id = 1
+#         # try:
+#         #     community = parse_date(request.query_params['community'])
+#         # except ValueError:
+#         #     return Response({"error": "Invalid community format"}, status=status.HTTP_400_BAD_REQUEST)
+#         # community_id = 1
 
-        if community_id:
-            messages = Message.objects.filter(community=community_id)
-        else:
-            return Response({"error": "Community ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+#         if community_id:
+#             messages = Message.objects.filter(community=community_id)
+#         else:
+#             return Response({"error": "Community ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = MessageSerializer(messages, many=True)
-        return Response(serializer.data)
+#         serializer = MessageSerializer(messages, many=True)
+#         return Response(serializer.data)
+
+@csrf_exempt
+def MessageView(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            username = data['username']
+            community_name = data['community_name']
+            message = data['message']
+
+            try:
+                community = Community.objects.get(name=community_name)
+            except Community.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Community not found'})
+
+
+            if username and community and message:
+                # curr_date = str(date.today())
+
+                Message.objects.create(
+                    user=user,
+                    date=date.today(),
+                    community=community,  # Assuming you want to associate the message with the first community
+                    message=new_message_content
+                )
+
+                return JsonResponse({'status': 'success', 'message': 'Data received successfully'})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Missing required data'})
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+    if request.method == 'GET':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            username = data['username']
+        
+            if username:
+                # Assuming your User model has a field 'username'
+                user_profile = UserProfile.objects.get(user__username=username)
+                user = user_profile.user
+                user_communities = user_profile.get_communities()
+
+
+                # Retrieve all communities for the user
+                user_communities = user_profile.get_communities()
+
+                # Retrieve messages for the user's communities
+                messages = Message.objects.filter(community__in=user_communities)
+
+                # Serialize messages
+                message_data = [{'content': message.content, 'timestamp': message.timestamp} for message in messages]
+                
+                response_data = {'status': 'success', 'user': user_info, 'messages': message_data}
+                response = JsonResponse(response_data)
+                response.set_cookie('csrftoken', get_token(request))
+                response.set_cookie('sessionid', request.session.session_key, httponly=False, secure=False)
+                response.set_cookie('username', user.username, httponly=False, secure=False)
+                return response
+
+        except UserProfile.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'User profile not found'})
+
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+            
+
 
 class BookingView(APIView): 
 
