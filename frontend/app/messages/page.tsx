@@ -56,16 +56,17 @@ export const AnnoucementDashboard = () => {
 
   // const { currentUser } = useAuth();
 
-  const currentUser = { username: 'admin' }; // Default to 'test' if no user is logged in
+  const currentUser = { username: 'thomas' }; // Default to 'test' if no user is logged in
 
   useEffect(() => {
     setIsLoading(true);
     // Construct the URL with a query parameter for the username
-    const url = `http://localhost:8000/api/message/?user=${encodeURIComponent(currentUser.username)}`;
+    const url = `http://localhost:8000/api/message/?username=${encodeURIComponent(currentUser.username)}`;
 
     axios.get(url) // Use the URL with the query parameter
       .then(response => {
-        setAnnouncements(response.data); // Assuming the response data is the array of announcements
+        console.log(response.data.messages);
+        setAnnouncements(response.data.messages); // Assuming the response data is the array of announcements
       })
       .catch(error => {
         console.error("Error fetching data: ", error);
