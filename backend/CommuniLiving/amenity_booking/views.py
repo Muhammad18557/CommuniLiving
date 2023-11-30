@@ -157,7 +157,7 @@ def MessageView(request):
                 print(messages)
 
                 # Serialize messages
-                message_data = [{'community': message.community.name, 'user': message.user.username, 'date': message.date.strftime("%Y-%m-%d"), 'message': message.message} for message in messages]
+                message_data = [{'id': message.id, 'community': message.community.name, 'user': message.user.username, 'date': message.date.strftime("%Y-%m-%d"), 'message': message.message} for message in messages]
                 
                 print(message_data)
 
