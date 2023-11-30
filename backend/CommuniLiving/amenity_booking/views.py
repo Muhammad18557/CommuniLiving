@@ -136,8 +136,6 @@ def MessageView(request):
                 return JsonResponse({'status': 'error', 'message': 'Missing required data'})
         except json.JSONDecodeError as e:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
     if request.method == 'GET':
         try:
@@ -158,7 +156,7 @@ def MessageView(request):
                 messages = Message.objects.filter(community__in=user_communities)
 
                 # Serialize messages
-                message_data = [{'content': message.content, 'timestamp': message.timestamp} for message in messages]
+                message_data = [{'community': message.community, 'user': message.user, 'date': message.date, 'message': message.message} for message in messages]
                 
                 response_data = {'status': 'success', 'user': user_info, 'messages': message_data}
                 response = JsonResponse(response_data)
@@ -172,6 +170,10 @@ def MessageView(request):
 
         except json.JSONDecodeError as e:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
             
 
 
