@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -318,22 +319,6 @@ def user_info(request):
 #     return render(request, 'registration/signup.html', context)
 
 @csrf_exempt
-def register_user(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body.decode('utf-8'))
-            username = data['name']
-            email = data['email']
-            password = data['password']
-            print(username, email, password)
-            User.objects.create_user(username=username, email=email, password=password)
-            return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
-        except json.JSONDecodeError as e:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
-
-@csrf_exempt
 def AddUserCommunity(request):
     print("i am being called")
     if request.method == 'POST':
@@ -368,3 +353,41 @@ def AddUserCommunity(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def SignupView(request):
+    # data = json.loads(request.body.decode('utf-8'))
+    data = request.data
+
+    username = data['username']
+    email = data['email']
+    password = data['password']
+    re_password = data['re_password']
+    serializer = SignupSerializer(data=data)
+    if serializer.is_valid():
+        username = serializer.validated_data['username']
+        email = serializer.validated_data['email']
+        password = serializer.validated_data['password']
+        re_password = serializer.validated_data['re_password']
+    else:
+        print("Validation errors:", serializer.errors)
+        return Response({'error': 'Invalid data provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if password != re_password:
+        return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if len(password) < 6:
+        return Response({'error': 'Password must be at least 6 characters'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if User.objects.filter(username=username).exists():
+        return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = User.objects.create_user(username=username, password=password)
+
+    # Create the user profile
+    user_profile = UserProfile.objects.create(user=user)
+
+    # Return a success response
+    return Response({'status': 'success'}, status=status.HTTP_201_CREATED)

@@ -1,4 +1,4 @@
-from amenity_booking.views import AmenitiesView, BookingView, DummyView, LoginView, logout_view, user_info, register_user, TimeTableView, MessageView, AddUserCommunity
+from amenity_booking.views import AmenitiesView, BookingView, DummyView, LoginView, logout_view, user_info, SignupView, TimeTableView, MessageView, AddUserCommunity
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
 
@@ -16,6 +16,6 @@ urlpatterns = [
     path('logout/', logout_view, name ='logout'),
     path('user_info/', user_info, name ='user_info'),
     path('timetable/', TimeTableView.as_view(), name ='timetable'),
-    path('register/', register_user, name='register_user'),
+    path('signup/', SignupView, name='register_user'),
     path('message/', MessageView, name='messages'),
 ]

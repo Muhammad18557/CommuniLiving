@@ -37,4 +37,10 @@ class MessageSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         return Message.objects.create(**validated_data)
+
+class SignupSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    email = serializers.CharField(max_length=150)
+    password = serializers.CharField(write_only=True)
+    re_password = serializers.CharField(write_only=True)
         

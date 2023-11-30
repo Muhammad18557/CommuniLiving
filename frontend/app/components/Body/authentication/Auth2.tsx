@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Cookies from 'js-cookie';
-import axios from 'axios';
 
 interface AuthFormProps {
   isSignUp: boolean;
@@ -20,33 +19,14 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
   const [successSignUp, setSuccessSignUp] = useState(false);
   const [successSignIn, setSuccessSignIn] = useState(false);
 
+  // new code:
+  // const { login } = useAuth();
+
   const router = useRouter();
 
   const handleNavigation = () => {
     router.push(isSignUp ? '/login' : '/signup');
   };
-
-  // const handleAnonymousLogin = async () => {
-  //   // Implement anonymous login logic with your Django backend.
-  //   try {
-  //     const response = await fetch('/api/anonymous-login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       router.push('/home');
-  //     } else {
-  //       const data = await response.json();
-  //       alert(data.error || 'Trouble signing in anonymously. Please try again.');
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     alert('An error occurred.');
-  //   }
-  // };
 
   const getCSRFToken = () => {
     return Cookies.get('csrftoken');
@@ -55,20 +35,13 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
   // Example usage
   const csrfToken = getCSRFToken();
 
-  const handleAuthAction = async (e) => {
-    e.preventDefault();
+  const handleAuthAction = async () => {
     try {
       if (!email || !password) {
         alert('Please enter both email and password.');
         return;
       }
-
-      // const formData = {
-      //   username: email,
-      //   password,
-      //   name: isSignUp ? name : undefined,
-      // };
-
+      
       let formData = {};
 
       if (isSignUp) {
@@ -77,7 +50,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
           username: name,
           email,
           password,
-          re_password: confirmPassword,
+          confirmPassword,
         };
       } else {
         // For login, use email as username
@@ -87,117 +60,55 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
         };
       }
       const apiUrl = isSignUp
-      ? 'http://localhost:8000/api/signup/' // Replace with your signup API endpoint
+      ? 'http://localhost:8000/api/register/' // Replace with your signup API endpoint
       : 'http://localhost:8000/api/login/'; // Replace with your login API endpoint
-
-      // const headers = {
-      //   'Content-Type': 'application/json',
-      //   'X-CSRFToken': csrfToken, // Make sure to include the CSRF token for requests that require it
-      // };
 
 
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
-        // credentials: 'include',
-        // mode: 'cors',  // Add this line to explicitly set CORS mode
         body: JSON.stringify(formData),
       });
-  
-      const responseData = await response.text(); // Read response as text
 
       if (response.ok) {
-        try {
-          const data = JSON.parse(responseData);
 
-          if (isSignUp) {
-            setSuccessSignUp(true);
-          } else {
-            setSuccessSignIn(true);
-          }
+        const data = await response.json();
+        // localStorage.setItem('access_token', data.access);
+        // localStorage.setItem('refresh_token', data.refresh);
 
-          const redirectTimeout = setTimeout(() => {
-            router.push('/');
-          }, 1500);
-          return () => clearTimeout(redirectTimeout);
-        } catch (parseError) {
-          console.error('Error parsing JSON:', parseError);
-          alert('An error occurred while parsing the server response.');
+        if (isSignUp) {
+          setSuccessSignUp(true);
+        } else {
+          // login();
+          console.log('login successful')
+          console.log(csrfToken)
+          setSuccessSignIn(true);
         }
+
+        setTimeout(() => {
+          router.push('/');
+        }, 1500);
       } else {
-        try {
-          const errorData = JSON.parse(responseData);
-          alert(errorData.non_field_errors || 'An error occurred.');
-        } catch (parseError) {
-          console.error('Error parsing JSON:', parseError);
-          alert('An error occurred while parsing the server error response.');
-        }
+        const data = await response.json();
+        alert(data.non_field_errors || 'An error occurred.');
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       alert('An error occurred.');
     }
-  };
-    // console.log(response.status, response.statusText);
-      // console.log(await response.json());
-
-      // const response = await axios.post(apiUrl, formData, { headers, withCredentials: true });
-
-
-      // const response = axios.post('http://localhost:8000/api/signup/', {
-      //   username: 'example',
-      //   email: 'example@email.com',
-      //   password: 'yourpassword',
-      //   re_password: 'yourpassword',
-      // }, {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'X-Csrftoken': 'your-csrf-token', // Replace with your actual CSRF token
-      //   },
-      // })
-
-      // console.log('Server response:', await response);
-
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     // localStorage.setItem('access_token', data.access);
-    //     // localStorage.setItem('refresh_token', data.refresh);
-
-    //     if (isSignUp) {
-    //       setSuccessSignUp(true);
-    //     } else {
-    //       setSuccessSignIn(true);
-    //     }
-
-    //     const redirectTimeout = setTimeout(() => {
-    //       router.push('/');
-    //     }, 1500);
-    //     return () => clearTimeout(redirectTimeout);
-    //   } else {
-    //     const data = await response.json();
-    //     alert(data.non_field_errors || 'An error occurred.');
-    //   }
-    // }
-    // catch (error) {
-    //   console.log(error);
-    //   alert('An error occurred.');
-    // }
-    // };
+    };
 
     useEffect(() => {
       if (successSignUp) {
-        const redirectTimeout = setTimeout(() => {
+        setTimeout(() => {
           // Redirect to the sign-in page after successful registration
           router.push('/login');
         }, 1500);
-    
-        return () => clearTimeout(redirectTimeout); // Cleanup on unmount
       }
-    }, [successSignUp, router]);
+    }, [successSignUp]);
 
   return (
     <>
@@ -347,13 +258,6 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
                   {isSignUp ? 'Sign In' : 'Create Account'}
                 </span>
               </Link>
-              {/* &nbsp; or &nbsp;
-              <span
-                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                onClick={handleAnonymousLogin}
-              >
-                Login Anonymously
-              </span> */}
             </p>
           </div>
         )}
