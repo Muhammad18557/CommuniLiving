@@ -1,3 +1,0 @@
-username: admin
-email: admin@communiliving.com
-password: adminpass

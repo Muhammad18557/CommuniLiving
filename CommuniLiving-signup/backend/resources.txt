@@ -1,3 +1,0 @@
-https://learndjango.com/tutorials/django-login-and-logout-tutorial
-
-https://github.com/seankwarren/Django-React-jwt-authentication
