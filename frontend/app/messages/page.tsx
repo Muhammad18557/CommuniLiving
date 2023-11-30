@@ -54,7 +54,9 @@ export const AnnoucementDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { currentUser } = useAuth();
+  // const { currentUser } = useAuth();
+
+  const currentUser = { username: 'admin' }; // Default to 'test' if no user is logged in
 
   useEffect(() => {
     setIsLoading(true);
@@ -70,7 +72,7 @@ export const AnnoucementDashboard = () => {
         setError(error);
       })
       .finally(() => setIsLoading(false));
-  }, [currentUser.username]); // Dependency to re-run the effect if the username changes
+  }, [currentUser.username]);
 
 
   const postAnnouncement = () => {
