@@ -17,5 +17,5 @@ urlpatterns = [
     path('user_info/', user_info, name ='user_info'),
     path('timetable/', TimeTableView.as_view(), name ='timetable'),
     path('register/', register_user, name='register_user'),
-    path('message/', MessageView.as_view(), name='messages'),
+    path('message/', MessageView, name='messages'),
 ]

@@ -139,15 +139,14 @@ def MessageView(request):
 
     if request.method == 'GET':
         try:
-            data = json.loads(request.body.decode('utf-8'))
-            username = data['username']
-        
+            # data = json.loads(request.body.decode('utf-8'))
+            # username = data['username']
+            username = request.GET.get('username')
+
             if username:
-                # Assuming your User model has a field 'username'
                 user_profile = UserProfile.objects.get(user__username=username)
                 user = user_profile.user
                 user_communities = user_profile.get_communities()
-
 
                 # Retrieve all communities for the user
                 user_communities = user_profile.get_communities()
@@ -155,14 +154,18 @@ def MessageView(request):
                 # Retrieve messages for the user's communities
                 messages = Message.objects.filter(community__in=user_communities)
 
+                print(messages)
+
                 # Serialize messages
-                message_data = [{'community': message.community, 'user': message.user, 'date': message.date, 'message': message.message} for message in messages]
+                message_data = [{'community': message.community.name, 'user': message.user.username, 'date': message.date.strftime("%Y-%m-%d"), 'message': message.message} for message in messages]
                 
-                response_data = {'status': 'success', 'user': user_info, 'messages': message_data}
+                print(message_data)
+
+                response_data = {'status': 'success', 'messages': message_data}
                 response = JsonResponse(response_data)
-                response.set_cookie('csrftoken', get_token(request))
-                response.set_cookie('sessionid', request.session.session_key, httponly=False, secure=False)
-                response.set_cookie('username', user.username, httponly=False, secure=False)
+                # response.set_cookie('csrftoken', get_token(request))
+                # response.set_cookie('sessionid', request.session.session_key, httponly=False, secure=False)
+                # response.set_cookie('username', user.username, httponly=False, secure=False)
                 return response
 
         except UserProfile.DoesNotExist:
