@@ -1,0 +1,161 @@
+HTTP 200 OK
+Allow: GET, HEAD, OPTIONS
+Content-Type: application/json
+Vary: Accept
+
+{
+    "date": "2023-12-01",
+        "community": "Football",
+        "amenity:" "TV",
+        "time_slots": [
+            {
+                "start_time": "00:00",
+                "end_time": "00:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "00:30",
+                "end_time": "01:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "01:00",
+                "end_time": "01:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "01:30",
+                "end_time": "02:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "02:00",
+                "end_time": "02:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "02:30",
+                "end_time": "03:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "03:00",
+                "end_time": "03:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "03:30",
+                "end_time": "04:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "04:00",
+                "end_time": "04:30",
+                "is_booked": false
+            }
+        ]
+}
+{
+    "date": "2023-12-01",
+        "community": "Football",
+        "amenity:" "Kitchen",
+        "time_slots": [
+            {
+                "start_time": "00:00",
+                "end_time": "00:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "00:30",
+                "end_time": "01:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "01:00",
+                "end_time": "01:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "01:30",
+                "end_time": "02:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "02:00",
+                "end_time": "02:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "02:30",
+                "end_time": "03:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "03:00",
+                "end_time": "03:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "03:30",
+                "end_time": "04:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "04:00",
+                "end_time": "04:30",
+                "is_booked": false
+            }
+        ]
+}
+{
+    "date": "2023-12-01",
+        "community": "Ballroom",
+        "amenity:" "Kitchen",
+        "time_slots": [
+            {
+                "start_time": "00:00",
+                "end_time": "00:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "00:30",
+                "end_time": "01:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "01:00",
+                "end_time": "01:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "01:30",
+                "end_time": "02:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "02:00",
+                "end_time": "02:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "02:30",
+                "end_time": "03:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "03:00",
+                "end_time": "03:30",
+                "is_booked": false
+            },
+            {
+                "start_time": "03:30",
+                "end_time": "04:00",
+                "is_booked": false
+            },
+            {
+                "start_time": "04:00",
+                "end_time": "04:30",
+                "is_booked": false
+            }
+        ]
+}

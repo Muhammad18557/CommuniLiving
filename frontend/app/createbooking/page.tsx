@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './CreateBooking.css';
+import withAuthProtection from '../components/Body/authentication/HOC';
 
 function CreateBooking() { 
   
@@ -176,4 +177,6 @@ function CreateBooking() {
   );
 }
 
-export default CreateBooking;
+
+
+export default withAuthProtection(CreateBooking);

@@ -4,45 +4,15 @@ import { useState } from "react";
 import './login.css';
 
 
-export const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+"use client"
 
-  const submit = async (e) => {
-    e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        'http://localhost:8000/api/token/',
-        {
-          username: username,
-          password: password
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+import Auth from "../components/Body/authentication/Auth";
 
-      const { data } = response;
-
-      // Store tokens in local storage
-      localStorage.setItem('access_token', data.access);
-      localStorage.setItem('refresh_token', data.refresh);
-
-      // Set authorization header for future requests
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-
-      // Redirect or perform other actions upon successful login
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Login failed', error);
-      // Handle login error, such as displaying an error message to the user
-    }
-  };
+function Login() {
 
   return (
+
     <div className="Auth-form-container">
       <br></br>
       <br></br>
@@ -85,8 +55,12 @@ export const Login = () => {
           </div>
         </div>
       </form>
+
+    <div>
+      <Auth isSignUp={false} />
+
     </div>
   );
-};
+}
 
 export default Login;

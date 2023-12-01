@@ -1,16 +1,30 @@
 "use client";
 
-import React, {useState} from 'react'
+import React, {useState, useEffect, use} from 'react'
+import axios from 'axios';
 import Link from 'next/link'; 
 import './Header.css'
+import { useAuth } from '../Body/authentication/AuthContext';
 
 function Header() {
     const [click, setClick] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
-
-
+      
+      const { user, logout } = useAuth();
+      useEffect(() => {
+        // Check user authentication status on component mount
+        setIsLoggedIn(user ? true : false);
+      }
+        , [user]);
+      
+    const handleLogout = () =>{
+        logout();
+    };
+        
+      
   return (
     <nav>
     <div className='header-container'>
@@ -25,10 +39,18 @@ function Header() {
         <div>
             <ul className={click ? 'menu active' : 'menu'}>
                 <li className='menu-item'> <Link href='/'  className='menu-links' onClick={closeMobileMenu}>Home</Link> </li>
-                <li className='menu-item'> <Link href='/createbooking' className='menu-links' onClick={closeMobileMenu}> Dashboard</Link></li>
+                <li className='menu-item'> <Link href='/dashboard' className='menu-links' onClick={closeMobileMenu}> Dashboard</Link></li>
+                <li className='menu-item'> <Link href='/messages' className='menu-links' onClick={closeMobileMenu}> Announcements</Link></li>
                 <li className='menu-item'> <Link href='/help' className='menu-links' onClick={closeMobileMenu}> Help</Link> </li>
-                <li className='menu-item'> <Link href='/' className='menu-links' onClick={closeMobileMenu}> Admin</Link></li>
-                <li className='menu-item'> <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link></li>
+                {/* <li className='menu-item'> <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link></li> */}
+                <li className='menu-item'>
+                    {isLoggedIn ? (
+                        // If user is authenticated, show logout button
+                        <Link href='/dummylogin' className='menu-links' onClick={handleLogout}> <button className='login-button'>Log Out</button></Link>
+                    ) : (
+                        <Link href='/dummylogin' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link>
+                    )}
+                </li>
             </ul>
         </div>
 
