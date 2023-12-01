@@ -68,21 +68,42 @@ function DummyLogin() {
 };
 
   return (
-    <div>
-      <form className='dummy-container' onSubmit={handleSubmit}>
-        <input 
-          type='text' 
-          placeholder='username' 
-          value={username} 
-          onChange={handleUsernameChange}  
-        />
-        <input 
-          type='password' // Changed type to 'password'
-          placeholder='password' 
-          value={password} 
-          onChange={handlePasswordChange}
-        />
-        <button type='submit'>Login</button>
+    <div className="dummy-container">
+      <br></br>
+      <br></br>
+      <img
+            className="logo-image"
+            src="https://communitylivinginc.org/wp-content/uploads/2016/05/CLI-Logo-cropped.png"
+            alt="Your Company"
+          />
+      <br></br>
+      <br></br>
+      <form className='Auth-form' onSubmit={handleSubmit}>
+        <div className="Auth-form-content">
+            <br></br>
+            <div className="form-group">
+              <input 
+              type='text' 
+              placeholder='Username' 
+              className = 'form-control'
+              value={username} 
+              onChange={handleUsernameChange}  
+            />
+            </div>
+              <div className="form-group">
+                <input 
+                type='password' // Changed type to 'password'
+                placeholder='Password' 
+                className = 'form-control'
+                value={password} 
+                onChange={handlePasswordChange}
+              />
+            
+            </div>
+              <div className="d-grid">
+                <button type='submit' className ="btn-primary">Login</button>
+              </div>
+          </div>
       </form>
     </div>
   );

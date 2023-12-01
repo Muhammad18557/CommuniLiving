@@ -40,7 +40,6 @@
 // };
 
 // export default AnnoucementDashboard;
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -49,8 +48,6 @@ import './annoucementDashboard.css';
 import { useAuth } from '../components/Body/authentication/AuthContext';
 import DummyLogin from '../dummylogin/page';
 import withAuthProtection from '../components/Body/authentication/HOC';
-
-
 
 export const AnnoucementDashboard = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -61,22 +58,17 @@ export const AnnoucementDashboard = () => {
   const [error, setError] = useState("");
 
   const { user } = useAuth();
-  
-  const currentUser = { 
-    username: user ? user.username : 'admin' // If 'user' is defined, use 'user.username', otherwise default to 'thomas'
+  const currentUser = {
+    username: user ? user.username : 'admin', // If 'user' is defined, use 'user.username', otherwise default to 'admin'
   };
-  // console.log("current user is", currentUser);
-  
 
   useEffect(() => {
     setIsLoading(true);
-    // Construct the URL with a query parameter for the username
     const url = `http://localhost:8000/api/message/?username=${encodeURIComponent(currentUser.username)}`;
 
-    axios.get(url) // Use the URL with the query parameter
+    axios.get(url)
       .then(response => {
-        // console.log(response.data.messages);
-        setAnnouncements(response.data.messages); // Assuming the response data is the array of announcements
+        setAnnouncements(response.data.messages);
         setError(null);
       })
       .catch(error => {
@@ -85,7 +77,6 @@ export const AnnoucementDashboard = () => {
       })
       .finally(() => setIsLoading(false));
   }, [currentUser.username]);
-
 
   const postAnnouncement = () => {
     if (!newAnnouncement) {
@@ -98,21 +89,21 @@ export const AnnoucementDashboard = () => {
     }
 
     axios.post("http://localhost:8000/api/message/", {
-      "username": currentUser.username, 
+      "username": currentUser.username,
       "community_name": selectCommunity,
       "message": newAnnouncement,
     })
-    .then(response => {
-      console.log("Announcement posting....");
-      console.log(response.status);
-      setError("");
+      .then(response => {
+        console.log("Announcement posting....");
+        console.log(response.status);
+        setError("");
 
-      setAnnouncements([...announcements, response.data]); // Assuming response.data is the new announcement
-      setNewAnnouncement('');
-    })
-    .catch(error => {
-      console.error("Error posting announcement: ", error);
-    });
+        setAnnouncements([...announcements, response.data]);
+        setNewAnnouncement('');
+      })
+      .catch(error => {
+        console.error("Error posting announcement: ", error);
+      });
   };
 
   useEffect(() => {
@@ -127,7 +118,7 @@ export const AnnoucementDashboard = () => {
         setError(error);
       })
       .finally(() => setIsLoading(false));
-    }, []);
+  }, []);
 
   const handleNewAnnouncementChange = (e) => {
     setNewAnnouncement(e.target.value);
@@ -135,43 +126,47 @@ export const AnnoucementDashboard = () => {
 
   const handleCommunityChange = (event) => {
     setSelectCommunity(event.target.value);
-};
+  };
 
   if (isLoading) return <p>Loading...</p>;
 
-
   return (
     <div className="annoucement-container">
+      <h1 className="page-title">Announcements</h1>
       <div className='card-container'>
         {announcements && announcements.map((announcement) => (
-          <AnnoucementCard
-            key={announcement.id} 
-            name={announcement.community}
-            person={announcement.user}
-            message={announcement.message}
-            date={announcement.date}
-            phone={""}
-            mail={""}
-          />
+          <div className="annoucement-card" key={announcement.id}>
+            <AnnoucementCard
+              name={announcement.community}
+              person={announcement.user}
+              message={announcement.message}
+              date={announcement.date}
+              phone={""}
+              mail={""}
+            />
+          </div>
         ))}
       </div>
-      <p className='annoucement-title'>Make Announcement to Community</p>
-      <div className="annoucement-notes">
-        <textarea 
-          placeholder="Annoucement" 
-          value={newAnnouncement}
-          onChange={handleNewAnnouncementChange}
-        ></textarea>
+        <br></br>
+      <div className="make-annoucement">
+        <p className='annoucement-title'>Make Announcement to Community</p>
+        <br></br>
+        <select value={selectCommunity} onChange={handleCommunityChange}>
+          <option value="">Select a Community</option>
+          {communities && communities.map(community => (
+            <option key={community.id} value={community.community_name}>
+              {community.community_name}
+            </option>
+          ))}
+        </select>
+        <div className="annoucement-notes">
+          <textarea
+            placeholder="Annoucement"
+            value={newAnnouncement}
+            onChange={handleNewAnnouncementChange}
+          ></textarea>
+        </div>
       </div>
-
-      <select value={selectCommunity} onChange={handleCommunityChange}>
-                <option value="">Select a Community</option>
-                {communities && communities.map(community => (
-                    <option key= {community.id} value={community.community_name}>
-                      {community.community_name}
-                    </option>
-                  ))}
-      </select>
 
       <button className="confirm-booking" onClick={postAnnouncement}>Confirm Announcement</button>
 

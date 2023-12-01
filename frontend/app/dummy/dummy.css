@@ -1,11 +1,60 @@
-.dummy-container {
-    margin-top: 300px;
-    background-color: #fff;
-    border: 1px solid black;
-    border-radius: 4px;
-    padding: 15px;
+/* Login.css */
+
+   .dummy-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
+    height: 100vh;
+  }
+  
+  .logo-image {
+    width: 10%; 
+    height: auto; 
+  }
+
+  .Auth-form {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .form-control:focus {
+    border-color: #557D71; 
+    box-shadow: 0 0 0 0.1rem #7eac9e; 
+  }
+
+  .d-grid {
+    text-align: center;
+  }
+  
+  .btn-primary {
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: white;
+    width: 80%;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+  }
+
+  
+  .btn-primary:hover {
+    background-color: #45a049;
+  }
+  
