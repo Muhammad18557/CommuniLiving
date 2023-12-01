@@ -9,7 +9,7 @@ import React from 'react';
 import axios from 'axios';
 import { useAuth } from '../components/Body/authentication/AuthContext';
 import BookingCard from '../components/BookingCard/BookingCard';
-import bookingData from './bookingData.json';
+// import bookingData from './bookingData.json';
 import Link from 'next/link';
 import './userDashboard.css';
 
@@ -20,7 +20,7 @@ export const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { user } = useAuth();
+  const { user, setCommunityData } = useAuth();
 
   useEffect(() => {
     if (!user) {
@@ -103,24 +103,6 @@ export const Dashboard = () => {
 
   );
 };
-
-// export default Dashboard;
-
-// export const UserDashboard = () => {
-//   const { user } = useAuth();
-
-//   if (!user) {
-//     return (
-//       <DummyLogin />
-//     );
-//   }
-//   return (
-//    <Dashboard />
-//   );
-// };
-
-// export default UserDashboard;
-
 
 import withAuthProtection from '../components/Body/authentication/HOC';
 

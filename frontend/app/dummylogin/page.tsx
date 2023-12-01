@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import '../dummy/dummy.css';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -8,8 +10,13 @@ import { useAuth } from '../components/Body/authentication/AuthContext';
 function DummyLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  // const [warning, setWarning] = useState(''); // New state for warning message
+
 
   const { login } = useAuth();
+
+  const router = useRouter();  // Initialize router
+
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -48,15 +55,20 @@ function DummyLogin() {
                 console.log(Cookies.get('username'));
                 console.log(Cookies.get('sessionid'));
                 console.log(Cookies.get('csrftoken'));
+                router.push('/');
             }
             else {
+                alert(data.message); // Set the warning message
                 console.log('login failed with this message:', data.message);
             }
         } else {
             // Handle errors here
             console.error('Login failed:', response.statusText);
+            alert('Login failed. Please try again.'); // Generic error message
+
         }
     } catch (error) {
+        alert('An error occurred. Please try again later.'); // Generic error message
         if (axios.isAxiosError(error)) {
             // Handle Axios-specific error
             console.error('Axios error:', error.message);

@@ -154,3 +154,19 @@ textarea:focus {
     font-size: 1.2rem;
     transition: color 0.3s;
 }
+
+.add-another-amenity {
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: white;
+    width: 50%;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.amenity-description {
+    margin-top: 20px;
+    font-size: medium;
+}

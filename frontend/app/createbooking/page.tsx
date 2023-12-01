@@ -3,8 +3,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './CreateBooking.css';
 import withAuthProtection from '../components/Body/authentication/HOC';
+import { useAuth} from '../components/Body/authentication/AuthContext';
 
 function CreateBooking() { 
+
+  const { user, community, setCommunityData } = useAuth();
+
   
   const getCurrentDate = () => {
     const now = new Date();
@@ -80,13 +84,18 @@ function CreateBooking() {
   };
 
   const handleAmenitySelection = (amenity) => {
+    console.log('Selected amenity:', amenity);
     setSelectedAmenity(amenity);
   };
   const sharedSpaceId = 1;
   // const userId = 1; //hard coding for now until we have login functionality
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/amenities/${sharedSpaceId}/`)
+    if (!community) {
+      return;
+    }
+    console.log('Fetching amenities for community:', community);
+    axios.get(`http://localhost:8000/api/amenities?community_name=${community}`)
       .then(response => {
         console.log('Response:', response.data);
         setAmenities(response.data);
@@ -97,7 +106,8 @@ function CreateBooking() {
       .catch(error => {
         console.error('Error fetching amenities:', error);
       });
-  }, []);
+  }, [community]);
+
 
   if (bookingCreated) {
     return (
@@ -117,10 +127,12 @@ function CreateBooking() {
       <h1>Create A Booking</h1>
       <br></br>
       <p>Let’s create a new booking. Share some information about your booking with us, and we’ll go ahead and place your reservation.</p>
+      <div className='add-another-amenity'>Click Here to add another amenity to this community</div>
+      <p className='option-label'>Amenities available for booking for community: {community}</p>
       
-      <p className='option-label'>Amenities available for booking</p>
       <div className="amenity-selection">
-      {amenities.map((amenity, index) => (
+        {!amenities && <p>This community doesn't have any amenity.</p>}
+      {amenities && amenities.map((amenity, index) => (
         <button
           key={index}
           onClick={() => handleAmenitySelection(amenity)}
@@ -129,7 +141,9 @@ function CreateBooking() {
 }}
         >
         {amenity.name}
+        <div className='amenity-description'>{amenity.description}</div>
         </button>
+        
       ))}
       </div>
     <p className='option-label'>Select date</p>

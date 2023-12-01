@@ -212,6 +212,7 @@ class BookingView(APIView):
     def post(self, request): 
         """ Creates a new booking in the database for an amenity."""
         print(request.user)
+        print(request)
         # hard coding user for now, to be session authenticated later
         request.data['user'] = 1
         serializer = BookingSerializer(data=request.data)
@@ -226,6 +227,9 @@ class BookingView(APIView):
             # check if the amenity is already booked
             if Booking.objects.filter(amenity__id=amenityId, date=date, start_time=start_time, end_time=end_time).exists():
                 return Response("The amenity is already booked", status=status.HTTP_400_BAD_REQUEST)
+            # if Booking.objects.filter(Q(amenity__id=amenity_id) & Q(date=date, start_time__lt=end_time, end_time__gt=start_time)).exists():
+            #     return Response("The amenity is already booked during this time period", status=status.HTTP_400_BAD_REQUEST)
+
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
@@ -488,16 +492,21 @@ class TimeTableView(APIView):
             return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
 
 class AmenitiesView(APIView):
-    def get(self, request, community_name):
+    def get(self, request):
         try:
+            community_name = request.query_params.get('community_name')
+
             # Get the community based on the input name
             community = Community.objects.get(name=community_name)
 
             # Get all amenities associated with the community
             amenities = Amenity.objects.filter(community=community)
 
+            if len(amenities) == 0:
+                return Response({'error': 'Community has no amenities'}, status=status.HTTP_204_NO_CONTENT)    
+
             # Serialize the amenities data
-            amenity_data = [{'name': amenity.name, 'description': amenity.description} for amenity in amenities]
+            amenity_data = [{'id': amenity.id, 'name': amenity.name, 'description': amenity.description} for amenity in amenities]
 
             return Response(amenity_data)
 
@@ -529,3 +538,26 @@ def createCommunity(request):
                 return JsonResponse({'status': 'error', 'message': 'Missing required data'})
         except json.JSONDecodeError as e:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+
+
+@csrf_exempt
+def addAmenity(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            amenity_name = data['user']
+            community_name = data['community_name']
+            description = data['description']
+
+            try:
+                community = Community.objects.get(name=community_name)
+            except Community.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Invalid community pass'}, status=400)
+
+            amenity = Amenity.objects.create(name=amenity_name, description=description, community=community)
+
+            return JsonResponse({'status': 'success', 'amenity_name': amenity.name}, status=201)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
