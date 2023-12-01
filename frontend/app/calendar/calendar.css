@@ -61,3 +61,33 @@ th:first-child, td:first-child {
 th:first-child {
     font-weight: bold;
 }
+
+.table-wrapper {
+    margin: 0 auto;
+    width: 80%;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.date-control {
+    font-size: 16px;
+}
+
+.booking-control a {
+    text-decoration: none;
+    color: #53775F;
+    font-size: 16px;
+}
+
+.booking-control a:before {
+    content: '+ ';
+    font-weight: bold;
+}
+
+.booked {
+    background-color: #FFCCCC;
+}

@@ -3,21 +3,36 @@
 <head>
     <title>Calendar</title>
     <link rel="stylesheet" type="text/css" href="calendar.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div id="navbar"></div>
     <div class="container">
         <h1 id="main-title">Community Name</h1>
         <h2 id="sub-title">Let's find an available space for your needs</h2>
-        <table id="scheduleTable">
-        <tr>
-            <th>Time</th>
-            <th>Amenity 1</th>
-            <th>Amenity 2</th>
-            <th>Amenity 3</th>
-        </tr>
-        <!-- We wil add rows here via JS -->
-    </table>
+        
+        <div class="table-wrapper">
+            <div class="controls">
+                <div class="date-control">
+                    <button id="prevDay">&lt;</button>
+                    <span id="currentDate"></span>
+                    <button id="nextDay">&gt;</button>
+                </div>
+                <div class="booking-control">
+                    <a href="https://theuselessweb.com" class="create-booking">Create Booking</a>
+                </div>
+            </div>
+            <table id="scheduleTable">
+                <tr>
+                    <th>Time</th>
+                    <th>Amenity 1</th>
+                    <th>Amenity 2</th>
+                    <th>Amenity 3</th>
+                </tr>
+                <!-- We wil add rows here via JS -->
+            </table>
+        </div>
+    </div>
 
     <script src="calendar.js"></script>
 </body>
