@@ -1,58 +1,84 @@
-.annoucement-container{
+.annoucement-container {
     display: flex;
     max-width: 75%;
     margin: auto;
-    margin-top: 17vh;
+    margin-top: 15vh;
     padding: 20px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     align-items: center;
     justify-content: center;
     flex-direction: column;
-}
-
-.page-title {
-    text-align: center;
-    color: #557D71;
-    font-size: 1.8rem;
-    font-weight: bold;
-}
-
-.annoucement-container  
-textarea:focus {
-    border-color: #00aaff;
-}
-
-.annoucement-dashboard-page .annoucement-title {
-    margin-top: 8%;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center; /* Center the text */
+  }
+  
+  .card-container {
     width: 100%;
   }
 
-.annoucement-notes textarea {
-    width: 70%;
-    padding: 8px;
-    margin-top: 8px;
+  .annoucement-card{
+    margin-top: 15px;
+  }
+
+  .page-title {
+    text-align: center;
+    color: #557D71;
+    font-size: 2rem; 
+    font-weight: bold;
+    margin-bottom: 20px; 
+  }
+  
+  .annoucement-container textarea:focus {
+    border-color: #00aaff;
+  }
+  
+.annoucement-title {
+    margin-top: 5%; 
+    color: #557D71;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    font-size: 1.5rem;
+  }
+  
+  .annoucement-notes {
+    width: 80%;
+    height: 200%;
+    margin: auto; 
+  }
+  
+  .annoucement-notes textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto; 
+    font-size: 1rem;
   }
   
+  .make-annoucement {
+    width: 80%; 
+    margin: auto; 
+    text-align: center; 
+  }
 
+  .make-annoucement select {
+    width: 25%;
+    margin: auto;
+    margin-bottom: 15px;
+  }
+  
   .confirm-booking {
     margin-top: 20px;
     background-color: #557D71;
     color: white;
-    width: 20%;
-    padding: 10px 15px;
+    width: 30%; 
+    padding: 15px; 
     border: none;
     cursor: pointer;
     display: block;
     margin-left: auto;
     margin-right: auto;
-}
+    font-size: 1.2rem; 
+  }
+  

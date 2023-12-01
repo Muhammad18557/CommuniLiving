@@ -84,7 +84,7 @@ export const Dashboard = () => {
         ))}
       </div>
 
-      <div>
+      <div className = "communityCode">
         <form onSubmit={handleSubmit}>
         <label htmlFor="communityCode">Community Code</label>
         <input 
