@@ -51,12 +51,20 @@ import { useAuth } from '../components/Body/authentication/AuthContext';
 export const AnnoucementDashboard = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [newAnnouncement, setNewAnnouncement] = useState('');
+  const [communities, setCommunities] = useState([]);
+  const [selectCommunity, setSelectCommunity] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   // const { currentUser } = useAuth();
 
-  const currentUser = { username: 'admin' }; // Default to 'test' if no user is logged in
+
+  const { user } = useAuth();
+  const currentUser = { 
+    username: user ? user.username : 'thomas' // If 'user' is defined, use 'user.username', otherwise default to 'thomas'
+  };
+  // console.log("current user is", currentUser);
+  
 
   useEffect(() => {
     setIsLoading(true);
@@ -65,8 +73,9 @@ export const AnnoucementDashboard = () => {
 
     axios.get(url) // Use the URL with the query parameter
       .then(response => {
-        console.log(response.data.messages);
+        // console.log(response.data.messages);
         setAnnouncements(response.data.messages); // Assuming the response data is the array of announcements
+        setError(null);
       })
       .catch(error => {
         console.error("Error fetching data: ", error);
@@ -77,35 +86,64 @@ export const AnnoucementDashboard = () => {
 
 
   const postAnnouncement = () => {
+    if (!newAnnouncement) {
+      setError("Announcement cannot be empty!");
+      return;
+    }
+    if (!selectCommunity) {
+      setError("Please select a community!");
+      return;
+    }
+
     axios.post("http://localhost:8000/api/message/", {
       "username": currentUser.username, 
-      "community_name": "G14",
+      "community_name": selectCommunity,
       "message": newAnnouncement,
     })
     .then(response => {
-      console.log(response);
+      console.log("Announcement posting....");
+      console.log(response.status);
+      setError("");
+
       setAnnouncements([...announcements, response.data]); // Assuming response.data is the new announcement
-      setNewAnnouncement(''); // Clear the textarea
+      setNewAnnouncement('');
     })
     .catch(error => {
       console.error("Error posting announcement: ", error);
     });
   };
 
+  useEffect(() => {
+    let url = `http://localhost:8000/api/get_user_communities/?username=${encodeURIComponent(currentUser.username)}`;
+    axios.get(url)
+      .then(response => {
+        setCommunities(response.data.communities);
+        setError(null);
+      })
+      .catch(error => {
+        console.error("Error fetching data: ", error);
+        setError(error);
+      })
+      .finally(() => setIsLoading(false));
+    }, []);
+
   const handleNewAnnouncementChange = (e) => {
     setNewAnnouncement(e.target.value);
   };
 
+  const handleCommunityChange = (event) => {
+    setSelectCommunity(event.target.value);
+};
+
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading announcements!</p>;
 
   return (
     <div className="annoucement-container">
       <div className='card-container'>
-        {announcements.map((announcement) => (
+        {announcements && announcements.map((announcement) => (
           <AnnoucementCard
-            key={announcement.id} // Assuming each announcement has a unique 'id'
-            name=""
+            key={announcement.id} 
+            name={announcement.community}
             person={announcement.user}
             message={announcement.message}
             date={announcement.date}
@@ -122,7 +160,19 @@ export const AnnoucementDashboard = () => {
           onChange={handleNewAnnouncementChange}
         ></textarea>
       </div>
+
+      <select value={selectCommunity} onChange={handleCommunityChange}>
+                <option value="">Select a Community</option>
+                {communities && communities.map(community => (
+                    <option key= {community.id} value={community.community_name}>
+                      {community.community_name}
+                    </option>
+                  ))}
+      </select>
+
       <button className="confirm-booking" onClick={postAnnouncement}>Confirm Announcement</button>
+
+      <div> {error} </div>
     </div>
   );
 };

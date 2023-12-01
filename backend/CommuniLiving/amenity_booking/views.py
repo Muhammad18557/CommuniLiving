@@ -26,7 +26,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import json
 from django.http import JsonResponse
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 
 # Dummy view to test the connection between the frontend and the backend
@@ -59,30 +59,30 @@ class AmenitiesView(APIView):
         serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
         return Response(serializer.data)
 
-class TimeTableView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [AllowAny]
+# class TimeTableView(APIView):
+#     authentication_classes = [SessionAuthentication, BasicAuthentication]
+#     permission_classes = [AllowAny]
 
-    def get(self, request, amenity_id=None):
-        """Returns all bookings for a specific day."""
-        curr_date = str(date.today()-timedelta(days=2))
-        print(curr_date)
-        # if 'date' not in request.query_params:
-        #     return Response({"error": "Date parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
+#     def get(self, request, amenity_id=None):
+#         """Returns all bookings for a specific day."""
+#         curr_date = str(date.today()-timedelta(days=2))
+#         print(curr_date)
+#         # if 'date' not in request.query_params:
+#         #     return Response({"error": "Date parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # try:
-        #     date = parse_date(request.query_params['date'])
-        # except ValueError:
-        #     return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
+#         # try:
+#         #     date = parse_date(request.query_params['date'])
+#         # except ValueError:
+#         #     return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if amenity_id:
-            bookings = Booking.objects.filter(amenity=amenity_id, date=curr_date)
-        else:
-            user = request.user
-            bookings = Booking.objects.filter(date=curr_date)
+#         if amenity_id:
+#             bookings = Booking.objects.filter(amenity=amenity_id, date=curr_date)
+#         else:
+#             user = request.user
+#             bookings = Booking.objects.filter(date=curr_date)
 
-        serializer = BookingSerializer(bookings, many=True)
-        return Response(serializer.data)
+#         serializer = BookingSerializer(bookings, many=True)
+#         return Response(serializer.data)
 
 # class MessageView(APIView):
 #     authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -166,12 +166,12 @@ def MessageView(request):
                 # Retrieve messages for the user's communities
                 messages = Message.objects.filter(community__in=user_communities)
 
-                print(messages)
+                # print(messages)
 
                 # Serialize messages
                 message_data = [{'id': message.id, 'community': message.community.name, 'user': message.user.username, 'date': message.date.strftime("%Y-%m-%d"), 'message': message.message} for message in messages]
                 
-                print(message_data)
+                # print(message_data)
 
                 response_data = {'status': 'success', 'messages': message_data}
                 response = JsonResponse(response_data)
@@ -391,3 +391,86 @@ def SignupView(request):
 
     # Return a success response
     return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
+
+@csrf_exempt
+def getUserCommunities(request):
+    if request.method == 'GET':
+        try:
+            username = request.GET.get('username')
+            # Boolean for if you want to return detailed information for communities
+            detail = request.GET.get('detail')
+
+            if username:
+                user_profile = UserProfile.objects.get(user__username=username)
+                user = user_profile.user
+                user_communities = user_profile.get_communities()
+
+                # Retrieve all communities for the user
+                user_communities = user_profile.get_communities()
+
+                if bool(detail) == True:
+                    community_data = [{'id': community.id, 'community_name': community.name, 'join_pass': community.join_pass, 'description': community.description} for community in user_communities]
+                else:
+                    community_data = [{'id': community.id, 'community_name': community.name} for community in user_communities]
+
+                response_data = {'status': 'success', 'communities': community_data}
+                response = JsonResponse(response_data)
+                return response
+
+        except UserProfile.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'User profile not found'})
+
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+class TimeTableView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request, amenity_id=None):
+        """Returns all bookings for a specific day with availability for 30-minute increments."""
+        try:
+            date_param = request.query_params.get('date')
+            if date_param:
+                curr_date = datetime.strptime(date_param, "%Y-%m-%d")
+            else:
+                curr_date = datetime.now().replace(microsecond=0, second=0, minute=0, hour=0)
+
+            time_slots = []
+            current_time = curr_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+            # Generate time slots for the entire day with 30-minute increments
+            while current_time < curr_date.replace(hour=23, minute=59):
+                end_time = current_time + timedelta(minutes=30)
+
+                # Check if the slot is booked
+                if amenity_id:
+                    is_booked = Booking.objects.filter(
+                        amenity=amenity_id,
+                        date=curr_date.date(),
+                        start_time__lt=end_time,
+                        end_time__gt=current_time
+                    ).exists()
+                else:
+                    is_booked = Booking.objects.filter(
+                        date=curr_date.date(),
+                        start_time__lt=end_time,
+                        end_time__gt=current_time
+                    ).exists()
+
+                time_slots.append({
+                    'start_time': current_time.strftime("%H:%M"),
+                    'end_time': end_time.strftime("%H:%M"),
+                    'is_booked': is_booked
+                })
+
+                current_time = end_time
+
+            return Response({'date': curr_date.strftime("%Y-%m-%d"), 'time_slots': time_slots})
+
+        except ValueError:
+            return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
