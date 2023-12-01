@@ -1,196 +1,79 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './CreateBooking.css';
-import withAuthProtection from '../components/Body/authentication/HOC';
-import { useAuth} from '../components/Body/authentication/AuthContext';
+import React, { useEffect, useState } from "react";
+import "./Calendar.css";
 
-function CreateBooking() { 
-
-  const { user, community, setCommunityData } = useAuth();
-
-  
-  const getCurrentDate = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  const getCurrentTime = () => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
-
-  const validateTimes = () => {
-    const start = new Date(`${bookingDate}T${startTime}`);
-    const end = new Date(`${bookingDate}T${endTime}`);
+const Calendar: React.FC = () => {
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [amenities, setAmenities] = useState<any[]>([]);
     
-    if (start >= end) {
-      setBookingError('Start time must be earlier than end time.');
-      return false; 
-    }
-    return true; 
-  };
+    useEffect(() => {
+        fetch('http://localhost:8000/api/timetable/')
+            .then(response => response.json())
+            .then(data => {
+                setAmenities(data.amenities);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [bookingCreated, setbookingCreated] = useState(false);
-  const [amenities, setAmenities] = useState([]);
-  const [selectedAmenity, setSelectedAmenity] = useState();
-  const [reservationNote, setReservationNote] = useState('');
-  const [bookingDate, setBookingDate] = useState(getCurrentDate());
-  const [startTime, setStartTime] = useState(getCurrentTime());
-  const [endTime, setEndTime] = useState(getCurrentTime());
-  const [bookingError, setBookingError] = useState('');
-
-
-  const handleBooking = () => {
-    setIsSubmitting(true);
-    if (!validateTimes()) {
-      setIsSubmitting(false);
-      return;
-    }
-    const bookingData = {
-      amenity: selectedAmenity.id,
-      date: bookingDate,
-      start_time: startTime,
-      end_time: endTime,
-      notes: reservationNote
-    };
-    console.log('Booking data:', bookingData);
-
-    setTimeout(() => {
-      axios.post('http://localhost:8000/api/bookings/', bookingData)
-        .then(response => {
-          console.log('Response:', response.data);
-          setBookingError('');
-          setbookingCreated(true);
-        })
-        .catch(error => {
-          console.error('Error creating booking:', error);
-          if (error.response && error.response.status === 400) {
-            // Assuming the server returns status 400 for booking conflicts
-            setBookingError('This booking slot is already taken. Please choose another time.');
-            setIsSubmitting(false);
-          } else {
-            setBookingError('An error occurred while creating the booking.');
-            setIsSubmitting(false);
-          }
-        });
-      }, 1500)
-  };
-
-  const handleAmenitySelection = (amenity) => {
-    console.log('Selected amenity:', amenity);
-    setSelectedAmenity(amenity);
-  };
-  const sharedSpaceId = 1;
-  // const userId = 1; //hard coding for now until we have login functionality
-
-  useEffect(() => {
-    if (!community) {
-      return;
-    }
-    console.log('Fetching amenities for community:', community);
-    axios.get(`http://localhost:8000/api/amenities?community_name=${community}`)
-      .then(response => {
-        console.log('Response:', response.data);
-        setAmenities(response.data);
-        if (response.data.length > 0) {
-          setSelectedAmenity(response.data[0]);
+    const generateTimeSlots = () => {
+        const slots = [];
+        for (let hour = 0; hour < 24; hour++) {
+            for (let minute = 0; minute < 60; minute += 30) {
+                const startTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                const endTime = `${hour.toString().padStart(2, '0')}:${(minute + 30).toString().padStart(2, '0')}`;
+                slots.push(`${startTime} - ${endTime}`);
+            }
         }
-      })
-      .catch(error => {
-        console.error('Error fetching amenities:', error);
-      });
-  }, [community]);
+        return slots;
+    };
 
+    const handleDateChange = (offset: number) => {
+        setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + offset));
+    };
 
-  if (bookingCreated) {
+    const timeSlots = generateTimeSlots();
+
     return (
-      <div className="booking-container">
-        <h1>Booking Created Successfully</h1>
-        <p className='success-booking'>Your request has been received and your booking has been created. Thank you for using CommuniLiving!</p>
-        <div className="links-to-dashboard-and-bookings">
-          <a href="/dashboard">Back to Dashboard</a>
-          <a href="/bookings">View Bookings</a>
+        <div className="container">
+            <h1 id="main-title">Community Name</h1>
+            <h2 id="sub-title">Let's find an available space for your needs</h2>
+            
+            <div className="table-wrapper">
+                <div className="controls">
+                    <div className="date-control">
+                        <button onClick={() => handleDateChange(-1)}>&lt;</button>
+                        <span>{currentDate.toISOString().split('T')[0]}</span>
+                        <button onClick={() => handleDateChange(1)}>&gt;</button>
+                    </div>
+                    <div className="booking-control">
+                        <a href="https://theuselessweb.com" className="create-booking">Create Booking</a>
+                    </div>
+                </div>
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            {amenities.map(amenity => (
+                                <th key={amenity.amenity_id}>{amenity.amenity_name}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {timeSlots.map(time => (
+                            <tr key={time}>
+                                <td>{time}</td>
+                                {amenities.map(amenity => {
+                                    const timeSlot = amenity.time_slots.find(slot => `${slot.start_time} - ${slot.end_time}` === time);
+                                    const isBooked = timeSlot ? timeSlot.is_booked : false;
+                                    return <td key={amenity.amenity_id} className={isBooked ? 'booked' : ''}></td>;
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
     );
-  }
+};
 
-  return (
-    <div className="booking-container">
-      <h1>Create A Booking</h1>
-      <br></br>
-      <p>Let’s create a new booking. Share some information about your booking with us, and we’ll go ahead and place your reservation.</p>
-      <div className='add-another-amenity'>Click Here to add another amenity to this community</div>
-      <p className='option-label'>Amenities available for booking for community: {community}</p>
-      
-      <div className="amenity-selection">
-        {!amenities && <p>This community doesn't have any amenity.</p>}
-      {amenities && amenities.map((amenity, index) => (
-        <button
-          key={index}
-          onClick={() => handleAmenitySelection(amenity)}
-          style={{ backgroundColor: selectedAmenity && selectedAmenity.id === amenity.id ? '#557D71' : '', 
-                  color: selectedAmenity && selectedAmenity.id === amenity.id ? 'white' : ''
-}}
-        >
-        {amenity.name}
-        <div className='amenity-description'>{amenity.description}</div>
-        </button>
-        
-      ))}
-      </div>
-    <p className='option-label'>Select date</p>
-    <div className="booking-date-input">
-      <input
-        type="date"
-        value={bookingDate}
-        onChange={(e) => setBookingDate(e.target.value)}
-      />
-    </div>
-
-      <p className='option-label'>Select start time</p>
-      <div className="booking-time-input">
-        <input
-          type="time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-        />
-      </div>
-
-
-      <p className='option-label'>Select end time</p>
-      <div className="booking-time-input">
-        <input
-          type="time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-        />
-      </div>
-
-      {bookingError && <div className="booking-error">{bookingError}</div>} {/* Display the error message if any */}
-  
-      <p className='option-label'>Notes for Others</p>
-      <div className="reservation-notes">
-        <textarea placeholder="Study Session" value={reservationNote} onChange={(e) => setReservationNote(e.target.value)}></textarea>
-      </div>
-      <button
-        className="confirm-booking"
-        style={{ backgroundColor: isSubmitting ? "grey" : "" }}
-        onClick={handleBooking}
-        disabled={isSubmitting}>
-        {isSubmitting ? 'Submitting...' : 'Create Booking'}
-     </button>
-      </div>
-  );
-}
-
-
-
-export default withAuthProtection(CreateBooking);
+export default Calendar;

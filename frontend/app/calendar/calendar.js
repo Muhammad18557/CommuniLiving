@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // Generate date picker
-    
     const currentDateElement = document.getElementById('currentDate');
     let currentDate = new Date();
 
@@ -21,82 +20,59 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDateDisplay();
     });
 
-    // Generate schedule table
-    
+    // Fetch and generate table
+    fetch('http://localhost:8000/api/timetable/')
+        .then(response => response.json())
+        .then(data => {
+            generateTable(data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+});
+
+function generateTable(data) {
     const table = document.getElementById('scheduleTable');
     const timeSlots = generateTimeSlots();
 
+    // Clear existing table
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+    }
+
+    // Generate the header row
+    const headerRow = table.rows[0];
+    headerRow.innerHTML = '<th>Time</th>'; // Reset the header row
+    data.amenities.forEach(amenity => {
+        const th = document.createElement('th');
+        th.textContent = amenity.amenity_name;
+        headerRow.appendChild(th);
+    });
+
+    // Populate table rows
     timeSlots.forEach(time => {
         const row = table.insertRow();
         const timeCell = row.insertCell();
         timeCell.textContent = time;
 
-        for (let i = 1; i <= 3; i++) {
+        data.amenities.forEach(amenity => {
             const cell = row.insertCell();
+            const timeSlot = amenity.time_slots.find(slot => `${slot.start_time} - ${slot.end_time}` === time);
+            if (timeSlot && timeSlot.is_booked) {
+                cell.classList.add('booked');
+            }
             cell.addEventListener('click', function() {
                 this.classList.toggle('highlighted');
             });
-        }
+        });
     });
-
-    // Fetch data from API and update table
-    fetchDataAndUpdateTable();
-
-    function fetchDataAndUpdateTable() {
-        fetch('http://localhost:8000/api/timetable/')
-            .then(response => response.json())
-            .then(data => {
-                updateTableWithBookingData(data);
-            })
-            .catch(error => console.error('Error fetching data:', error));
-    }
-
-    function updateTableWithBookingData(data) {
-        data.forEach(amenity => {
-            amenity.time_slots.forEach(slot => {
-                if (slot.is_booked) {
-                    // Adjusting the time format from API to match the table format
-                    let formattedStartTime = formatTime(slot.start_time);
-                    let formattedEndTime = formatTime(slot.end_time);
-                    markSlotAsBooked(amenity.amenity, formattedStartTime, formattedEndTime);
-                }
-            });
-        });
-    }
-
-    function markSlotAsBooked(amenity, startTime, endTime) {
-        let timeSlot = `${startTime} - ${endTime}`;
-        let rows = document.querySelectorAll('#scheduleTable tr');
-    
-        rows.forEach((row, index) => {
-            if (index === 0) return;
-    
-            let timeCell = row.cells[0];
-            if (timeCell.textContent === timeSlot) {
-                for (let i = 1; i < row.cells.length; i++) {
-                    let cell = row.cells[i];
-                    let cellHeader = document.querySelector(`#scheduleTable th:nth-child(${i + 1})`).textContent;
-                    if (cellHeader === amenity) {
-                        cell.classList.add('booked');
-                        break;
-                    }
-                }
-            }
-        });
-    }
-
-    function formatTime(apiTime) {
-        // Converts time from "HH:MM" to "HHMM"
-        return apiTime.replace(':', '');
-    }
-});
+}
 
 function generateTimeSlots() {
     const slots = [];
     for (let hour = 0; hour < 24; hour++) {
         for (let minute = 0; minute < 60; minute += 30) {
-            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} - ${hour.toString().padStart(2, '0')}:${(minute + 30).toString().padStart(2, '0')}`;
-            slots.push(time);
+            const startTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            const endTime = `${hour.toString().padStart(2, '0')}:${(minute + 30).toString().padStart(2, '0')}`;
+            slots.push(`${startTime} - ${endTime}`);
         }
     }
     return slots;

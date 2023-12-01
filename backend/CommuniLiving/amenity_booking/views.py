@@ -443,8 +443,8 @@ class TimeTableView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [AllowAny]
 
-    def get(self, request, community_id):
-    # def get(self, request, community_id=1): # Use this for TESTING
+    # def get(self, request, community_id):
+    def get(self, request, community_id=1): # Use this for TESTING
         """Returns all bookings for a specific day with availability for 30-minute increments."""
         try:
             date_param = request.query_params.get('date')
