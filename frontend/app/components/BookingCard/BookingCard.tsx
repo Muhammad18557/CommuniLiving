@@ -103,7 +103,9 @@ const BookingCard: FC<BookingCardProps> = ({
   // Return the JSX for the component
   return (
     <div className="card"> 
-      <div className="text-wrapper">{name}</div>
+      <div className="text-wrapper"><Link href='/createbooking' passHref onClick={saveCommunityState}>
+          {name}
+        </Link></div>
       <p className="location">
         <span className="span">Location</span>
         <span className="text-wrapper-2">: {location}</span>
