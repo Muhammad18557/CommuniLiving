@@ -4,7 +4,7 @@
 // import bookingData from './bookingData.json';
 // import Link from 'next/link'; 
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import axios from 'axios';
 import { useAuth } from '../components/Body/authentication/AuthContext';
@@ -12,10 +12,35 @@ import BookingCard from '../components/BookingCard/BookingCard';
 import bookingData from './bookingData.json';
 import Link from 'next/link';
 import './userDashboard.css';
-import DummyLogin from '../dummylogin/page';
 
 export const Dashboard = () => {
+
   const [communityCode, setCommunityCode] = useState('');
+  const [communities, setCommunities] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    let url = `http://localhost:8000/api/get_user_communities/?username=${encodeURIComponent(user.username)}&details=1`;
+    axios.get(url)
+      .then(response => {
+        console.log(response)
+        console.log(response.data.communities);
+        setCommunities(response.data.communities);
+        setError("");
+      })
+      .catch(error => {
+        console.error("Error fetching data: ", error);
+        setError(error);
+      })
+      .finally(() => setIsLoading(false));
+    }, [communityCode]);
+
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission
@@ -43,18 +68,18 @@ export const Dashboard = () => {
           <div> Sample Booking Form (To be changed to calender later)
             <Link href='/createbooking' style={{ color: 'green' }}> Booking Page for a Community</Link>
           </div>
-          <div className="page-info"><h5>Here are your communities</h5></div>
+          <div className="page-info">{ communities ? <h5>Here are your communities</h5> : <h5>You aren't a part of any community yet.</h5>}</div>
         </div>
       </div>
       <div className='card-container'>
-        {bookingData.map((booking) => (
+        {communities && communities.map((community) => (
           <BookingCard
-            key={booking.id}
-            name={booking.name}
-            location={booking.location}
-            members={booking.members}
-            amenities={booking.amenities}
-            adminContact={booking.adminContact}
+            key={community.id}
+            name={community.community_name}
+            location={community.location}
+            members={community.join_pass}
+            amenities=""
+            adminContact=""
           />
         ))}
       </div>

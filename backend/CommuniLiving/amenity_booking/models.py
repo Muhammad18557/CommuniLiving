@@ -32,6 +32,7 @@ class Community(models.Model):
     """A cummunity is an apartment/suite etc that has multiple amenities."""
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
+    location = models.TextField(blank=True, null=True)
     join_pass = models.CharField(max_length=6, default=''.join([str(random.randint(0, 9)) for _ in range(6)]), unique=True)
     description = models.TextField(blank=True, null=True)
 

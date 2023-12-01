@@ -46,18 +46,18 @@ class DummyView(APIView):
     def post(self, request):
         pass
 
-class AmenitiesView(APIView):
-    """Returns a list of all amenities in the database for the given shared space."""
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [AllowAny]
+# class AmenitiesView(APIView):
+#     """Returns a list of all amenities in the database for the given shared space."""
+#     authentication_classes = [SessionAuthentication, BasicAuthentication]
+#     permission_classes = [AllowAny]
 
-    def get(self, request, community_id=None):
-        if community_id:
-            amenities = Amenity.objects.filter(community__id=community_id) # return amenities for the given shared space
-        else:
-            amenities = Amenity.objects.all() # return all amenities in the database
-        serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
-        return Response(serializer.data)
+#     def get(self, request, community_id=None):
+#         if community_id:
+#             amenities = Amenity.objects.filter(community__id=community_id) # return amenities for the given shared space
+#         else:
+#             amenities = Amenity.objects.all() # return all amenities in the database
+#         serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
+#         return Response(serializer.data)
 
 # class TimeTableView(APIView):
 #     authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -344,9 +344,17 @@ def AddUserCommunity(request):
                 return JsonResponse({'status': 'error', 'message': 'User not found'}, status=400)
 
             user_profile, created = UserProfile.objects.get_or_create(user=user)
-            user_profile.communities.add(community)
-            # user_profile.communities.remove(community)
-            print(user_profile.get_communities())
+            # user_profile.communities.add(community)
+            # # user_profile.communities.remove(community)
+            # print(user_profile.get_communities())
+
+            if community not in user_profile.communities.all():
+                user_profile.communities.add(community)
+                print(user_profile.get_communities())
+                return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
+            else:
+                return JsonResponse({'status': 'error', 'message': 'User is already part of the community'}, status=400)
+
 
             return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
         except json.JSONDecodeError as e:
@@ -398,7 +406,7 @@ def getUserCommunities(request):
         try:
             username = request.GET.get('username')
             # Boolean for if you want to return detailed information for communities
-            detail = request.GET.get('detail')
+            details = request.GET.get('details')
 
             if username:
                 user_profile = UserProfile.objects.get(user__username=username)
@@ -408,8 +416,8 @@ def getUserCommunities(request):
                 # Retrieve all communities for the user
                 user_communities = user_profile.get_communities()
 
-                if bool(detail) == True:
-                    community_data = [{'id': community.id, 'community_name': community.name, 'join_pass': community.join_pass, 'description': community.description} for community in user_communities]
+                if bool(details) == True:
+                    community_data = [{'id': community.id, 'community_name': community.name, 'join_pass': community.join_pass, 'description': community.description, 'location': community.location} for community in user_communities]
                 else:
                     community_data = [{'id': community.id, 'community_name': community.name} for community in user_communities]
 
@@ -431,7 +439,7 @@ class TimeTableView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [AllowAny]
 
-    def get(self, request, amenity_id=None):
+    def get(self, request, amenity_id):
         """Returns all bookings for a specific day with availability for 30-minute increments."""
         try:
             date_param = request.query_params.get('date')
@@ -474,3 +482,46 @@ class TimeTableView(APIView):
 
         except ValueError:
             return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
+
+class AmenitiesView(APIView):
+    def get(self, request, community_name):
+        try:
+            # Get the community based on the input name
+            community = Community.objects.get(name=community_name)
+
+            # Get all amenities associated with the community
+            amenities = Amenity.objects.filter(community=community)
+
+            # Serialize the amenities data
+            amenity_data = [{'name': amenity.name, 'description': amenity.description} for amenity in amenities]
+
+            return Response(amenity_data)
+
+        except Community.DoesNotExist:
+            return Response({'error': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@csrf_exempt
+def createCommunity(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            community_name = data['community_name']
+            community_location = data['community_location']
+            community_description = data['community_description']
+
+            if community_name and community_location and community_description:
+
+                Community.objects.create(
+                    name=community_name,
+                    location=community_location,
+                    description=community_description
+                )
+
+                return JsonResponse({'status': 'success'})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Missing required data'})
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})

@@ -47,6 +47,10 @@ import axios from 'axios';
 import AnnoucementCard from '../components/AnnoucementCard/AnnoucementCard';
 import './annoucementDashboard.css';
 import { useAuth } from '../components/Body/authentication/AuthContext';
+import DummyLogin from '../dummylogin/page';
+import withAuthProtection from '../components/Body/authentication/HOC';
+
+
 
 export const AnnoucementDashboard = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -56,12 +60,10 @@ export const AnnoucementDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // const { currentUser } = useAuth();
-
-
   const { user } = useAuth();
+  
   const currentUser = { 
-    username: user ? user.username : 'thomas' // If 'user' is defined, use 'user.username', otherwise default to 'thomas'
+    username: user ? user.username : 'admin' // If 'user' is defined, use 'user.username', otherwise default to 'thomas'
   };
   // console.log("current user is", currentUser);
   
@@ -118,7 +120,7 @@ export const AnnoucementDashboard = () => {
     axios.get(url)
       .then(response => {
         setCommunities(response.data.communities);
-        setError(null);
+        setError("");
       })
       .catch(error => {
         console.error("Error fetching data: ", error);
@@ -136,6 +138,7 @@ export const AnnoucementDashboard = () => {
 };
 
   if (isLoading) return <p>Loading...</p>;
+
 
   return (
     <div className="annoucement-container">
@@ -177,4 +180,4 @@ export const AnnoucementDashboard = () => {
   );
 };
 
-export default AnnoucementDashboard;
+export default withAuthProtection(AnnoucementDashboard);

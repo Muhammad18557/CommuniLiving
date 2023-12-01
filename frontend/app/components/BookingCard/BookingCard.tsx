@@ -27,7 +27,7 @@ name,
             <br />
             <br />
         </span>
-        <span className="span">Members</span>
+        <span className="span">Join Pass</span>
         <span className="text-wrapper-2">
             : {members}<br />
             <br />
