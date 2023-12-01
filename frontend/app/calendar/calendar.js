@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Generate date picker
+    
+    const currentDateElement = document.getElementById('currentDate');
+    let currentDate = new Date();
+
+    function updateDateDisplay() {
+        currentDateElement.textContent = currentDate.toISOString().split('T')[0];
+    }
+
+    updateDateDisplay();
+
+    document.getElementById('prevDay').addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() - 1);
+        updateDateDisplay();
+    });
+
+    document.getElementById('nextDay').addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() + 1);
+        updateDateDisplay();
+    });
+
+    // Generate schedule table
+    
     const table = document.getElementById('scheduleTable');
     const timeSlots = generateTimeSlots();
 
