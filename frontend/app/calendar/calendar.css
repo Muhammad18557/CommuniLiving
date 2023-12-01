@@ -1,25 +1,33 @@
 body {
     background-color: #F9FFF8;
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#navbar {
+    background-color: #89A181;
+    height: 50px;
 }
 
 .container {
     text-align: center;
     width: 80%;
-    margin: 0 auto;
+    margin: auto;
+    padding-top: 50px;
 }
 
 #main-title {
     color: #53775F;
     font-weight: bold;
-    margin-bottom: 0;
+    margin-bottom: 20px;
     font-size: 36px;
 }
 
 #sub-title {
     color: #000000;
     font-weight: normal;
-    margin-top: 5px;
+    margin-bottom: 50px;
     font-size: 14px;
 }
 
@@ -27,6 +35,7 @@ table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
     background-color: #F9FFF8;
+    margin: 0 auto;
 }
 
 th, td {
@@ -50,4 +59,3 @@ th:first-child, td:first-child {
 th:first-child {
     font-weight: bold;
 }
-
