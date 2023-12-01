@@ -27,7 +27,7 @@
 .amenity-selection {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .amenity-selection button {
