@@ -87,3 +87,7 @@ th:first-child {
     content: '+ ';
     font-weight: bold;
 }
+
+.booked {
+    background-color: #FFCCCC;
+}

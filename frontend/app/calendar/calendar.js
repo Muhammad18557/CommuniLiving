@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // Generate date picker
-    
+
     const currentDateElement = document.getElementById('currentDate');
     let currentDate = new Date();
 
@@ -38,6 +38,44 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+
+    // Fetch bookings from database
+    const fetchBookings = () => {
+        const selectedDate = currentDate.toISOString().split('T')[0];
+        axios.get(`http://localhost:8000/api/bookings?date=${selectedDate}`)
+            .then(response => {
+                markBookedSlots(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching bookings:', error);
+            });
+    };
+
+    function markBookedSlots(bookings) {
+        bookings.forEach(booking => {
+            const startTime = booking.start_time; // need to adjust according to date format
+            const endTime = booking.end_time; // ^
+            const amenityId = booking.amenity_id; // ^
+            // TO-DO: implement logic to find the cell in the table and mark it as booked
+        });
+    }
+
+    // Call fetchBookings whenever the date changes
+    updateDateDisplay();
+    fetchBookings();
+    document.getElementById('prevDay').addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() - 1);
+        updateDateDisplay();
+        fetchBookings();
+    });
+
+    document.getElementById('nextDay').addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() + 1);
+        updateDateDisplay();
+        fetchBookings();
+    });
+
 });
 
 function generateTimeSlots() {
