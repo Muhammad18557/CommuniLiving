@@ -439,7 +439,8 @@ class TimeTableView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [AllowAny]
 
-    def get(self, request, amenity_id):
+    def get(self, request, community_id):
+    # def get(self, request, community_id=1): # Use this for TESTING
         """Returns all bookings for a specific day with availability for 30-minute increments."""
         try:
             date_param = request.query_params.get('date')
@@ -448,37 +449,40 @@ class TimeTableView(APIView):
             else:
                 curr_date = datetime.now().replace(microsecond=0, second=0, minute=0, hour=0)
 
-            time_slots = []
-            current_time = curr_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            amenities = Amenity.objects.filter(community=community_id)
 
-            # Generate time slots for the entire day with 30-minute increments
-            while current_time < curr_date.replace(hour=23, minute=59):
-                end_time = current_time + timedelta(minutes=30)
+            amenities_data = []
 
-                # Check if the slot is booked
-                if amenity_id:
+            for amenity in amenities:
+                time_slots = []
+                current_time = curr_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+                while current_time < curr_date.replace(hour=23, minute=59):
+                    end_time = current_time + timedelta(minutes=30)
+
+                    # Check if the slot is booked
                     is_booked = Booking.objects.filter(
-                        amenity=amenity_id,
+                        amenity=amenity,
                         date=curr_date.date(),
                         start_time__lt=end_time,
                         end_time__gt=current_time
                     ).exists()
-                else:
-                    is_booked = Booking.objects.filter(
-                        date=curr_date.date(),
-                        start_time__lt=end_time,
-                        end_time__gt=current_time
-                    ).exists()
 
-                time_slots.append({
-                    'start_time': current_time.strftime("%H:%M"),
-                    'end_time': end_time.strftime("%H:%M"),
-                    'is_booked': is_booked
+                    time_slots.append({
+                        'start_time': current_time.strftime("%H:%M"),
+                        'end_time': end_time.strftime("%H:%M"),
+                        'is_booked': is_booked
+                    })
+
+                    current_time = end_time
+
+                amenities_data.append({
+                    'amenity_name': amenity.name,  # Assuming your Amenity model has a 'name' field
+                    'amenity_id': amenity.id,
+                    'time_slots': time_slots
                 })
 
-                current_time = end_time
-
-            return Response({'date': curr_date.strftime("%Y-%m-%d"), 'time_slots': time_slots})
+            return Response({'date': curr_date.strftime("%Y-%m-%d"), 'amenities': amenities_data})
 
         except ValueError:
             return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
