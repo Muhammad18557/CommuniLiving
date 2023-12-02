@@ -1,11 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import "./Calendar.css";
 
 const Calendar: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [amenities, setAmenities] = useState<any[]>([]);
-    const [highlightedCells, setHighlightedCells] = useState<{ time: string; amenityId: number }[]>([]);
+    const [selectedSlots, setSelectedSlots] = useState<{ time: string; amenityId: number }[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [bookingCreated, setBookingCreated] = useState(false);
+    const [bookingError, setBookingError] = useState('');
     
     useEffect(() => {
         fetch('http://localhost:8000/api/timetable/')
@@ -35,17 +39,51 @@ const Calendar: React.FC = () => {
     const timeSlots = generateTimeSlots();
 
     const toggleHighlight = (time: string, amenityId: number) => {
-        const isHighlighted = highlightedCells.some(cell => cell.time === time && cell.amenityId === amenityId);
+        const isHighlighted = selectedSlots.some(cell => cell.time === time && cell.amenityId === amenityId);
         if (isHighlighted) {
-            setHighlightedCells(highlightedCells.filter(cell => cell.time !== time || cell.amenityId !== amenityId));
+            setSelectedSlots(selectedSlots.filter(cell => cell.time !== time || cell.amenityId !== amenityId));
         } else {
-            setHighlightedCells([...highlightedCells, { time, amenityId }]);
+            setSelectedSlots([...selectedSlots, { time, amenityId }]);
         }
     };
 
     const isCellHighlighted = (time: string, amenityId: number) => {
-        return highlightedCells.some(cell => cell.time === time && cell.amenityId === amenityId);
+        return selectedSlots.some(cell => cell.time === time && cell.amenityId === amenityId);
     };
+
+    const createBooking = () => {
+      if (selectedSlots.length === 0) {
+          setBookingError('Please select a time slot to book.');
+          return;
+      }
+      setIsSubmitting(true);
+      // for now, just taking the first picked slot for the booking
+      // do we wanna try to handle multiple slots?
+      const selectedSlot = selectedSlots[0];
+      const amenity = amenities.find(a => a.amenity_id === selectedSlot.amenityId);
+      if (!amenity) {
+          setBookingError('Invalid amenity selected.');
+          setIsSubmitting(false);
+          return;
+      }
+      const bookingData = {
+          amenity: amenity.amenity_id,
+          date: currentDate.toISOString().split('T')[0],
+          start_time: selectedSlot.time.split(' - ')[0],
+          end_time: selectedSlot.time.split(' - ')[1],
+          notes: '' // do we want this field to collect notes?
+      };
+      axios.post('http://localhost:8000/api/bookings/', bookingData)
+          .then(response => {
+              setBookingCreated(true);
+              setIsSubmitting(false);
+          })
+          .catch(error => {
+              console.error('Error creating booking:', error);
+              setBookingError('An error occurred while creating the booking.');
+              setIsSubmitting(false);
+          });
+  };
 
     return (
         <div className="container">
@@ -60,7 +98,10 @@ const Calendar: React.FC = () => {
                         <button onClick={() => handleDateChange(1)}>&gt;</button>
                     </div>
                     <div className="booking-control">
-                        <a href="https://theuselessweb.com" className="create-booking">Create Booking</a>
+                      <button onClick={createBooking} className="create-booking" disabled={isSubmitting}>
+                        {isSubmitting ? 'Creating Booking...' : 'Create Booking'}
+                      </button>
+                        {bookingError && <div className="booking-error">{bookingError}</div>}
                     </div>
                 </div>
                 <table id="scheduleTable">
