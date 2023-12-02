@@ -123,3 +123,18 @@ thead, tbody tr {
     margin: 4px 2px;
     cursor: pointer;
 }
+
+.date-control button {
+    background-color: #cfe5cb;
+    border: 2px solid 008000;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-weight: bold;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.date-control button:hover {
+    background-color: #76b476;
+}
+
