@@ -77,6 +77,7 @@ const Calendar: React.FC = () => {
           .then(response => {
               setBookingCreated(true);
               setIsSubmitting(false);
+              window.location.reload();
           })
           .catch(error => {
               console.error('Error creating booking:', error);
