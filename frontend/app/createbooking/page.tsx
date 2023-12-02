@@ -1,9 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import { useAuth } from "../components/Body/authentication/AuthContext";
 import "./Calendar.css";
 
 const Calendar: React.FC = () => {
+    const { user, community, setCommunity } = useAuth();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [amenities, setAmenities] = useState<any[]>([]);
     const [selectedSlots, setSelectedSlots] = useState<{ time: string; amenityId: number }[]>([]);
@@ -13,6 +15,7 @@ const Calendar: React.FC = () => {
     
     useEffect(() => {
       const formattedDate = currentDate.toISOString().split('T')[0];
+      console.log(formattedDate);
       fetch(`http://localhost:8000/api/timetable/?date=${formattedDate}`)
           .then(response => response.json())
           .then(data => {
