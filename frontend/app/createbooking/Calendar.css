@@ -14,7 +14,7 @@ body {
     text-align: center;
     width: 80%;
     margin: auto;
-    padding-top: 50px;
+    margin-top: 50px;
 }
 
 #main-title {
@@ -31,6 +31,11 @@ body {
     font-size: 14px;
 }
 
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
@@ -43,6 +48,7 @@ table, th, td {
 th, td {
     padding: 5px;
     text-align: center;
+    min-width: 150px;
 }
 
 .highlighted {
@@ -65,6 +71,18 @@ th:first-child {
 .table-wrapper {
     margin: 0 auto;
     width: 80%;
+}
+
+tbody {
+    display: block;
+    height: 300px;
+    overflow-y: scroll;
+}
+
+thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .controls {
