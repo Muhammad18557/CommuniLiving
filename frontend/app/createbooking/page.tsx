@@ -5,6 +5,7 @@ import "./Calendar.css";
 const Calendar: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [amenities, setAmenities] = useState<any[]>([]);
+    const [highlightedCells, setHighlightedCells] = useState<{ time: string; amenityId: number }[]>([]);
     
     useEffect(() => {
         fetch('http://localhost:8000/api/timetable/')
@@ -33,6 +34,19 @@ const Calendar: React.FC = () => {
 
     const timeSlots = generateTimeSlots();
 
+    const toggleHighlight = (time: string, amenityId: number) => {
+        const isHighlighted = highlightedCells.some(cell => cell.time === time && cell.amenityId === amenityId);
+        if (isHighlighted) {
+            setHighlightedCells(highlightedCells.filter(cell => cell.time !== time || cell.amenityId !== amenityId));
+        } else {
+            setHighlightedCells([...highlightedCells, { time, amenityId }]);
+        }
+    };
+
+    const isCellHighlighted = (time: string, amenityId: number) => {
+        return highlightedCells.some(cell => cell.time === time && cell.amenityId === amenityId);
+    };
+
     return (
         <div className="container">
             <h1 id="main-title">Community Name</h1>
@@ -59,16 +73,22 @@ const Calendar: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {timeSlots.map(time => (
-                            <tr key={time}>
-                                <td>{time}</td>
-                                {amenities.map(amenity => {
-                                    const timeSlot = amenity.time_slots.find(slot => `${slot.start_time} - ${slot.end_time}` === time);
-                                    const isBooked = timeSlot ? timeSlot.is_booked : false;
-                                    return <td key={amenity.amenity_id} className={isBooked ? 'booked' : ''}></td>;
-                                })}
-                            </tr>
-                        ))}
+                    {timeSlots.map(time => (
+                        <tr key={time}>
+                            <td>{time}</td>
+                            {amenities.map(amenity => {
+                                const isBooked = amenity.time_slots.some(slot => slot.start_time === time && slot.is_booked);
+                                const isHighlighted = isCellHighlighted(time, amenity.amenity_id);
+                                return (
+                                    <td 
+                                        key={amenity.amenity_id} 
+                                        className={`${isBooked ? 'booked' : ''} ${isHighlighted ? 'highlighted' : ''}`}
+                                        onClick={() => toggleHighlight(time, amenity.amenity_id)}
+                                    ></td>
+                                );
+                            })}
+                        </tr>
+                      ))}
                     </tbody>
                 </table>
             </div>
