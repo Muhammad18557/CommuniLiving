@@ -4,7 +4,7 @@ import { useState } from "react";
 import './login.css';
 
 
-"use client"
+
 
 
 import Auth from "../components/Body/authentication/Auth";
@@ -53,11 +53,17 @@ function Login() {
           <div className="d-grid gap-2 mt-3">
             <button type="submit" className="btn btn-primary">Submit</button>
           </div>
+          <br></br>
+          <div>
+        <p>If you don't have an account yet, <a href="#" id="signUpLink">click here to sign up</a>.</p>
+    </div>
         </div>
       </form>
 
     <div>
       <Auth isSignUp={false} />
+
+    </div>
 
     </div>
   );

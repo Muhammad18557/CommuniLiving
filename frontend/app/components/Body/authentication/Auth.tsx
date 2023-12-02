@@ -131,7 +131,11 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
       } else {
         try {
           const errorData = JSON.parse(responseData);
-          alert(errorData.non_field_errors || 'An error occurred.');
+          if (isSignUp && errorData.email && errorData.email[0] === 'user with this email already exists.') {
+            alert('An account with this email already exists.');
+          } else {
+            alert(errorData.non_field_errors || 'An error occurred.');
+          }  
         } catch (parseError) {
           console.error('Error parsing JSON:', parseError);
           alert('An error occurred while parsing the server error response.');

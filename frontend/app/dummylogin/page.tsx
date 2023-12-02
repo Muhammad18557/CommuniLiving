@@ -103,6 +103,12 @@ function DummyLogin() {
               <div className="d-grid">
                 <button type='submit' className ="btn-primary">Login</button>
               </div>
+              <div>
+                <p className = "mt-10 text-center text-sm text-gray-500"> No account? 
+                  <a href="/signup" id="signUpLink" className="font-semibold leading-6 text-primary hover:text-secondary"> Sign Up
+                  </a>
+                </p>
+              </div>
           </div>
       </form>
     </div>
