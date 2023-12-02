@@ -112,8 +112,8 @@ thead, tbody tr {
 
 .create-booking {
     background-color: #cfe5cb;
-    border: 2px solid #008000;
-    border-radius: 20px;
+    border: 2px solid #000000;
+    border-radius: 5px;
     color: black;
     font-weight: bold;
     padding: 10px 20px;
@@ -124,17 +124,21 @@ thead, tbody tr {
     cursor: pointer;
 }
 
+.booking-control button:hover {
+    background-color: #89A181;
+}
+
 .date-control button {
     background-color: #cfe5cb;
-    border: 2px solid 008000;
+    border: 2px solid #000000;
     border-radius: 50%;
-    padding: 5px 10px;
+    padding: 1.5px 5px;
     font-weight: bold;
-    margin: 0 5px;
+    margin: 0 10px;
     cursor: pointer;
 }
 
 .date-control button:hover {
-    background-color: #76b476;
+    background-color: #89A181;
 }
 
