@@ -109,3 +109,17 @@ thead, tbody tr {
 .booked {
     background-color: #8B0000;
 }
+
+.create-booking {
+    background-color: #cfe5cb;
+    border: 2px solid #008000;
+    border-radius: 20px;
+    color: black;
+    font-weight: bold;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+}
