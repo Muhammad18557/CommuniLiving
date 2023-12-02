@@ -114,21 +114,23 @@ const Calendar: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {timeSlots.map(time => (
-                        <tr key={time}>
-                            <td>{time}</td>
-                            {amenities.map(amenity => {
-                                const isBooked = amenity.time_slots.some(slot => slot.start_time === time && slot.is_booked);
-                                const isHighlighted = isCellHighlighted(time, amenity.amenity_id);
-                                return (
-                                    <td 
-                                        key={amenity.amenity_id} 
-                                        className={`${isBooked ? 'booked' : ''} ${isHighlighted ? 'highlighted' : ''}`}
-                                        onClick={() => toggleHighlight(time, amenity.amenity_id)}
-                                    ></td>
-                                );
-                            })}
-                        </tr>
+                      {timeSlots.map(time => (
+                          <tr key={time}>
+                              <td>{time}</td>
+                              {amenities.map(amenity => {
+                                  const timeSlot = amenity.time_slots.find(slot => 
+                                      `${slot.start_time} - ${slot.end_time}` === time);
+                                  const isBooked = timeSlot ? timeSlot.is_booked : false;
+                                  const isHighlighted = isCellHighlighted(time, amenity.amenity_id);
+                                  return (
+                                      <td 
+                                          key={amenity.amenity_id} 
+                                          className={`${isBooked ? 'booked' : ''} ${isHighlighted ? 'highlighted' : ''}`}
+                                          onClick={() => toggleHighlight(time, amenity.amenity_id)}
+                                      ></td>
+                                  );
+                              })}
+                          </tr>
                       ))}
                     </tbody>
                 </table>
