@@ -12,13 +12,14 @@ const Calendar: React.FC = () => {
     const [bookingError, setBookingError] = useState('');
     
     useEffect(() => {
-        fetch('http://localhost:8000/api/timetable/')
-            .then(response => response.json())
-            .then(data => {
-                setAmenities(data.amenities);
-            })
-            .catch(error => console.error('Error fetching data:', error));
-    }, []);
+      const formattedDate = currentDate.toISOString().split('T')[0];
+      fetch(`http://localhost:8000/api/timetable/?date=${formattedDate}`)
+          .then(response => response.json())
+          .then(data => {
+              setAmenities(data.amenities);
+          })
+          .catch(error => console.error('Error fetching data:', error));
+  }, [currentDate]);
 
     const generateTimeSlots = () => {
         const slots = [];
