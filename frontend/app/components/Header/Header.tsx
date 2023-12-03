@@ -42,7 +42,6 @@ function Header() {
                 <li className='menu-item'> <Link href='/dashboard' className='menu-links' onClick={closeMobileMenu}> Dashboard</Link></li>
                 <li className='menu-item'> <Link href='/messages' className='menu-links' onClick={closeMobileMenu}> Announcements</Link></li>
                 <li className='menu-item'> <Link href='/help' className='menu-links' onClick={closeMobileMenu}> Help</Link> </li>
-                {/* <li className='menu-item'> <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link></li> */}
                 <li className='menu-item'>
                     {isLoggedIn ? (
                         // If user is authenticated, show logout button

@@ -167,6 +167,12 @@ const Calendar: React.FC = () => {
             {amenityAdded && <div className="amenity-added">Amenity added successfully!</div>}
 
             {messageFlag && <h2 className="red-message">No amenities found for this community.</h2>}
+
+             {bookingSuccessMessage && (
+            <div className="booking-success-message">
+                {bookingSuccessMessage}
+            </div>
+            )}
             
             <div className="table-wrapper">
                 <div className="controls">
@@ -214,11 +220,6 @@ const Calendar: React.FC = () => {
                 </table>
             </div>
 
-            {bookingSuccessMessage && (
-            <div className="booking-success-message">
-                {bookingSuccessMessage}
-            </div>
-            )}
 
         </div>
     );

@@ -225,5 +225,7 @@ thead, tbody tr {
     color: green;
     font-weight: bold;
     text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
