@@ -46,66 +46,6 @@ class DummyView(APIView):
     def post(self, request):
         pass
 
-# class AmenitiesView(APIView):
-#     """Returns a list of all amenities in the database for the given shared space."""
-#     authentication_classes = [SessionAuthentication, BasicAuthentication]
-#     permission_classes = [AllowAny]
-
-#     def get(self, request, community_id=None):
-#         if community_id:
-#             amenities = Amenity.objects.filter(community__id=community_id) # return amenities for the given shared space
-#         else:
-#             amenities = Amenity.objects.all() # return all amenities in the database
-#         serializer = AmenitySerializer(amenities, many=True)  # Serialize the queryset
-#         return Response(serializer.data)
-
-# class TimeTableView(APIView):
-#     authentication_classes = [SessionAuthentication, BasicAuthentication]
-#     permission_classes = [AllowAny]
-
-#     def get(self, request, amenity_id=None):
-#         """Returns all bookings for a specific day."""
-#         curr_date = str(date.today()-timedelta(days=2))
-#         print(curr_date)
-#         # if 'date' not in request.query_params:
-#         #     return Response({"error": "Date parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # try:
-#         #     date = parse_date(request.query_params['date'])
-#         # except ValueError:
-#         #     return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         if amenity_id:
-#             bookings = Booking.objects.filter(amenity=amenity_id, date=curr_date)
-#         else:
-#             user = request.user
-#             bookings = Booking.objects.filter(date=curr_date)
-
-#         serializer = BookingSerializer(bookings, many=True)
-#         return Response(serializer.data)
-
-# class MessageView(APIView):
-#     authentication_classes = [SessionAuthentication, BasicAuthentication]
-#     permission_classes = [AllowAny]
-
-#     def get(self, request, community_id=None):
-#         """Returns all bookings for a specific day."""
-#         # if 'community' not in request.query_params:
-#         #     return Response({"error": "Community parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # try:
-#         #     community = parse_date(request.query_params['community'])
-#         # except ValueError:
-#         #     return Response({"error": "Invalid community format"}, status=status.HTTP_400_BAD_REQUEST)
-#         # community_id = 1
-
-#         if community_id:
-#             messages = Message.objects.filter(community=community_id)
-#         else:
-#             return Response({"error": "Community ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         serializer = MessageSerializer(messages, many=True)
-#         return Response(serializer.data)
 
 @csrf_exempt
 def MessageView(request):
@@ -175,9 +115,6 @@ def MessageView(request):
 
                 response_data = {'status': 'success', 'messages': message_data}
                 response = JsonResponse(response_data)
-                # response.set_cookie('csrftoken', get_token(request))
-                # response.set_cookie('sessionid', request.session.session_key, httponly=False, secure=False)
-                # response.set_cookie('username', user.username, httponly=False, secure=False)
                 return response
 
         except UserProfile.DoesNotExist:
@@ -223,25 +160,12 @@ class BookingView(APIView):
 
         if serializer.is_valid(raise_exception=True):
             print("serializer is valid")
-            # print(serializer.validated_data)
-            # check if the amenity is already booked
             if Booking.objects.filter(amenity__id=amenityId, date=date, start_time=start_time, end_time=end_time).exists():
                 return Response("The amenity is already booked", status=status.HTTP_400_BAD_REQUEST)
-            # if Booking.objects.filter(Q(amenity__id=amenity_id) & Q(date=date, start_time__lt=end_time, end_time__gt=start_time)).exists():
-            #     return Response("The amenity is already booked during this time period", status=status.HTTP_400_BAD_REQUEST)
-
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
-# @csrf_exempt
-# def register_user(request):
-#     print("here")
-#     serializer = UserSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
      permission_classes = (IsAuthenticated,)
@@ -303,30 +227,10 @@ def user_info(request):
     else:
         return JsonResponse({'username': None})
 
-# @csrf_exempt
-# def register_user(request):
-#     if request.method == 'POST':
-#         form = SignupForm(request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data.get('username')
-#             email = form.cleaned_data.get('email')
-#             password = form.cleaned_data.get('password')
-#             User.objects.create_user(username=username, email=email, password=password)
-#             return redirect('edit-profile')
-#         else:
-#             form = SignupForm()
-
-#         context = {
-#             'form':form,
-#         }
-
-#     return render(request, 'registration/signup.html', context)
 
 @csrf_exempt
 def AddUserCommunity(request):
-    print("i am being called")
     if request.method == 'POST':
-        print("i am being called")
         print(request.body)
         try:
             data = json.loads(request.body.decode('utf-8'))
@@ -348,9 +252,6 @@ def AddUserCommunity(request):
                 return JsonResponse({'status': 'error', 'message': 'User not found'}, status=400)
 
             user_profile, created = UserProfile.objects.get_or_create(user=user)
-            # user_profile.communities.add(community)
-            # # user_profile.communities.remove(community)
-            # print(user_profile.get_communities())
 
             if community not in user_profile.communities.all():
                 user_profile.communities.add(community)

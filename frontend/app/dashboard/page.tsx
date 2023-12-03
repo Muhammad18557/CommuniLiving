@@ -64,8 +64,8 @@ export const Dashboard = () => {
     <div className="user-dashboard-page">
       <div className="div">
         <div className="page-intro">
-        <div className="page-title"><h1>....</h1></div>
-          <div className="page-title"><h1>User Dashboard</h1></div>
+          <br></br>
+          <div className="page-title"><h1>Welcome to your Dashboard, {user.username}</h1></div>
           <div className="page-info">{ communities ? <h5>Here are your communities</h5> : <h5>You aren't a part of any community yet.</h5>}</div>
         </div>
       </div>

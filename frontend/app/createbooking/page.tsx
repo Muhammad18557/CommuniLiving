@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useAuth } from "../components/Body/authentication/AuthContext";
 import "./Calendar.css";
+import withAuthProtection from "../components/Body/authentication/HOC";
 
 const Calendar: React.FC = () => {
     const { user, community, setCommunity } = useAuth();
@@ -195,4 +196,4 @@ const Calendar: React.FC = () => {
     );
 };
 
-export default Calendar;
+export default withAuthProtection(Calendar);
