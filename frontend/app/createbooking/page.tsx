@@ -8,21 +8,57 @@ const Calendar: React.FC = () => {
     const { user, community, setCommunity } = useAuth();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [amenities, setAmenities] = useState<any[]>([]);
+    const [messageFlag, setMessageFlag] = useState(false);
     const [selectedSlots, setSelectedSlots] = useState<{ time: string; amenityId: number }[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [bookingCreated, setBookingCreated] = useState(false);
     const [bookingError, setBookingError] = useState('');
+    const [showAmenityForm, setShowAmenityForm] = useState(false);
+    const [newAmenity, setNewAmenity] = useState<any>({});
+    const [amenityAdded, setAmenityAdded] = useState(false);
+
+
+    const handleToggleAmenityForm = () => {
+        setShowAmenityForm(prev => !prev);
+    };    
+
+    const handleAmenityAdding = () => {
+        const amenityData = {
+            user: user.username,
+            community_name: community,
+            amenity_name: newAmenity.name,
+            description: newAmenity.description,  
+        };
+        axios.post('http://localhost:8000/api/addAmenity/', amenityData)
+    .then(response => {
+        setNewAmenity({}); 
+        if (response.status === 200) {
+            setAmenityAdded(true);
+            setShowAmenityForm(false); 
+        }
+    })
+    .catch(error => {
+        console.error('Error creating amenity:', error);
+    });
+
+        }
+
+
     
     useEffect(() => {
       const formattedDate = currentDate.toISOString().split('T')[0];
       console.log(formattedDate);
-      fetch(`http://localhost:8000/api/timetable/?date=${formattedDate}`)
+      fetch(`http://localhost:8000/api/timetable/?date=${formattedDate}&community_name=${community}`)
           .then(response => response.json())
           .then(data => {
+              setMessageFlag(false);
               setAmenities(data.amenities);
+              if (data.amenities && data.amenities.length  === 0) {
+                  setMessageFlag(true);
+              }
           })
           .catch(error => console.error('Error fetching data:', error));
-  }, [currentDate]);
+  }, [currentDate, community, amenityAdded]);
 
     const generateTimeSlots = () => {
         const slots = [];
@@ -92,8 +128,23 @@ const Calendar: React.FC = () => {
 
     return (
         <div className="container">
-            <h1 id="main-title">Community Name</h1>
+            <h1 id="main-title">{community}</h1>
             <h2 id="sub-title">Let's find an available space for your needs</h2>
+            <button className='add-another-amenity' onClick={handleToggleAmenityForm}>+ Add another amenity to {community}</button>
+            {showAmenityForm && 
+            <div className="amenity-form">
+                <form >
+                    <label htmlFor="name">Amenity Name</label>
+                    <input type="text" id="name" name="name" value={newAmenity.name} onChange={(e) => setNewAmenity({...newAmenity, name: e.target.value})} required placeholder="Amenity Name" />
+                    <label htmlFor="description">Description</label>
+                    <textarea id="description" name="description" value={newAmenity.description} onChange={(e) => setNewAmenity({...newAmenity, description: e.target.value})} placeholder="Describe the new amenity you are adding."/>
+                    <button onClick={handleAmenityAdding}>Add Amenity</button>
+                </form>
+            </div>
+            }
+            {amenityAdded && <div className="amenity-added">Amenity added successfully!</div>}
+
+            {messageFlag && <h2 className="red-message">No amenities found for this community.</h2>}
             
             <div className="table-wrapper">
                 <div className="controls">

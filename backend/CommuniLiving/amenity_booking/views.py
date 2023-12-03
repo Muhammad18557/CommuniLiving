@@ -552,7 +552,7 @@ def addAmenity(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body.decode('utf-8'))
-            amenity_name = data['user']
+            amenity_name = data['amenity_name']
             community_name = data['community_name']
             description = data['description']
 

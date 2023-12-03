@@ -31,6 +31,13 @@ body {
     font-size: 14px;
 }
 
+.red-message {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
 table {
     width: 100%;
     table-layout: fixed;
@@ -142,3 +149,74 @@ thead, tbody tr {
     background-color: #89A181;
 }
 
+
+
+.add-another-amenity {
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: white;
+    width: 30%;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+
+
+.amenity-form {
+    background-color: #f9f9f9; /* Light grey background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Spacing inside the form */
+    margin-top: 20px; /* Space above the form */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    width: 70%;
+    margin: 0 auto;
+}
+
+.amenity-form form {
+    display: flex;
+    flex-direction: column; /* Stack the label-input pairs vertically */
+}
+
+.amenity-form label {
+    font-weight: bold; /* Make labels bold */
+    margin-bottom: 5px; /* Space below labels */
+    color: #333; /* Dark grey color for text */
+}
+
+.amenity-form input[type="text"] {
+    padding: 10px; /* Spacing inside the input */
+    margin-bottom: 20px; /* Space below each input */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 4px; /* Slightly rounded corners for the input */
+    width: 40%;
+    margin: 10px auto;
+}
+
+.amenity-form button {
+    background-color: #557D71; /* Green background */
+    color: white; /* White text */
+    padding: 10px 15px; /* Vertical and horizontal padding */
+    border: none; /* No border */
+    border-radius: 4px; /* Match border radius of inputs */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Slightly larger font size */
+    width: 30%;
+    margin: 20px auto;
+}
+
+.amenity-form button:hover {
+    background-color: #4cae4c; /* Darker green on hover */
+}
+
+/* If you have a class for button disabled state, you can style it too */
+.amenity-form button:disabled {
+    background-color: #cccccc; /* Light grey for disabled state */
+    cursor: not-allowed; /* Show not-allowed cursor on hover */
+}
