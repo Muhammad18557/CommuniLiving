@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
+
 import axios from 'axios';
 import { useAuth } from "../components/Body/authentication/AuthContext";
 import "./Calendar.css";
@@ -17,6 +19,7 @@ const Calendar: React.FC = () => {
     const [showAmenityForm, setShowAmenityForm] = useState(false);
     const [newAmenity, setNewAmenity] = useState<any>({});
     const [amenityAdded, setAmenityAdded] = useState(false);
+    const [bookingSuccessMessage, setBookingSuccessMessage] = useState('');
 
 
     const handleToggleAmenityForm = () => {
@@ -44,10 +47,13 @@ const Calendar: React.FC = () => {
 
         }
 
-
-    
     useEffect(() => {
-      const formattedDate = currentDate.toISOString().split('T')[0];
+        const successMessage = localStorage.getItem('bookingSuccessMessage');
+        if (successMessage) {
+            setBookingSuccessMessage(successMessage);
+            localStorage.removeItem('bookingSuccessMessage');
+        }
+        const formattedDate = currentDate.toISOString().split('T')[0];
       console.log(formattedDate);
       fetch(`http://localhost:8000/api/timetable/?date=${formattedDate}&community_name=${community}`)
           .then(response => response.json())
@@ -62,16 +68,22 @@ const Calendar: React.FC = () => {
   }, [currentDate, community, amenityAdded]);
 
     const generateTimeSlots = () => {
-        const slots = [];
+    const slots = [];
         for (let hour = 0; hour < 24; hour++) {
             for (let minute = 0; minute < 60; minute += 30) {
                 const startTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                const endTime = `${hour.toString().padStart(2, '0')}:${(minute + 30).toString().padStart(2, '0')}`;
+
+                const nextHour = minute === 30 ? hour + 1 : hour;
+                const nextMinute = minute === 30 ? '00' : '30';
+
+                const endTime = `${nextHour.toString().padStart(2, '0')}:${nextMinute}`;
+
                 slots.push(`${startTime} - ${endTime}`);
             }
         }
         return slots;
     };
+
 
     const handleDateChange = (offset: number) => {
         setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + offset));
@@ -107,6 +119,13 @@ const Calendar: React.FC = () => {
           setIsSubmitting(false);
           return;
       }
+
+      if (!amenity) {
+        setBookingError('Invalid amenity selected.');
+        setIsSubmitting(false);
+        return;
+        }
+
       const bookingData = {
           amenity: amenity.amenity_id,
           date: currentDate.toISOString().split('T')[0],
@@ -118,6 +137,8 @@ const Calendar: React.FC = () => {
           .then(response => {
               setBookingCreated(true);
               setIsSubmitting(false);
+              const successMessage = `Successfully created booking for ${amenity.amenity_name} at ${selectedSlot.time} on ${currentDate.toISOString().split('T')[0]}`;
+              localStorage.setItem('bookingSuccessMessage', successMessage);
               window.location.reload();
           })
           .catch(error => {
@@ -192,6 +213,13 @@ const Calendar: React.FC = () => {
                     </tbody>
                 </table>
             </div>
+
+            {bookingSuccessMessage && (
+            <div className="booking-success-message">
+                {bookingSuccessMessage}
+            </div>
+            )}
+
         </div>
     );
 };

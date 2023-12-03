@@ -220,3 +220,10 @@ thead, tbody tr {
     background-color: #cccccc; /* Light grey for disabled state */
     cursor: not-allowed; /* Show not-allowed cursor on hover */
 }
+
+.booking-success-message {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+}
+
