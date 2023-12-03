@@ -443,17 +443,24 @@ class TimeTableView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [AllowAny]
 
-    # def get(self, request, community_id):
-    def get(self, request, community_id=1): # Use this for TESTING
+    def get(self, request):
+    # def get(self, request, community_id=1): # Use this for TESTING
         """Returns all bookings for a specific day with availability for 30-minute increments."""
         try:
             date_param = request.query_params.get('date')
+            community_name = request.query_params.get('community_name')
             if date_param:
                 curr_date = datetime.strptime(date_param, "%Y-%m-%d")
             else:
                 curr_date = datetime.now().replace(microsecond=0, second=0, minute=0, hour=0)
 
-            amenities = Amenity.objects.filter(community=community_id)
+            try:
+                community = Community.objects.get(name=community_name)
+            except Community.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Community not found'})
+            
+
+            amenities = Amenity.objects.filter(community=community.id)
 
             amenities_data = []
 
