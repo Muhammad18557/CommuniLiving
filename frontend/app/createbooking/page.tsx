@@ -61,16 +61,22 @@ const Calendar: React.FC = () => {
   }, [currentDate, community, amenityAdded]);
 
     const generateTimeSlots = () => {
-        const slots = [];
+    const slots = [];
         for (let hour = 0; hour < 24; hour++) {
             for (let minute = 0; minute < 60; minute += 30) {
                 const startTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                const endTime = `${hour.toString().padStart(2, '0')}:${(minute + 30).toString().padStart(2, '0')}`;
+
+                const nextHour = minute === 30 ? hour + 1 : hour;
+                const nextMinute = minute === 30 ? '00' : '30';
+
+                const endTime = `${nextHour.toString().padStart(2, '0')}:${nextMinute}`;
+
                 slots.push(`${startTime} - ${endTime}`);
             }
         }
         return slots;
     };
+
 
     const handleDateChange = (offset: number) => {
         setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + offset));
