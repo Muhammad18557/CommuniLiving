@@ -1,3 +1,5 @@
+
+
 .user-dashboard-page {
   display: flex;
   flex-direction: column;
@@ -27,17 +29,14 @@
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; 
-  gap: 20px; 
+  justify-content: space-around; 
+  gap: 20px;
 }
 
 .card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 5px;
-  flex: 0 0 auto;
+  flex: 1 0 calc(25% - 30px); /* Flexible width with a maximum of 25% and a minimum of 0 */
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 .communityCode {
@@ -139,14 +138,15 @@
   align-items: center;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1200px) {
   .card {
-    width: calc(50% - 20px);
+    flex: 1 0 calc(50% - 20px); /* Two cards per row on smaller screens */
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 800px) {
   .card {
-    width: calc(100% - 20px);
+    flex: 1 0 calc(100% - 20px); /* One card per row on even smaller screens */
   }
 }
+
