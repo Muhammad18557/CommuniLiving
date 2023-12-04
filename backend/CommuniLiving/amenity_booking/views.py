@@ -318,9 +318,6 @@ def getUserCommunities(request):
                 user = user_profile.user
                 user_communities = user_profile.get_communities()
 
-                # Retrieve all communities for the user
-                user_communities = user_profile.get_communities()
-
                 if bool(details) == True:
                     community_data = [{'id': community.id, 'community_name': community.name, 'join_pass': community.join_pass, 'description': community.description, 'location': community.location} for community in user_communities]
                 else:
@@ -424,6 +421,7 @@ class AmenitiesView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# where is the join passcode assigned
 @csrf_exempt
 def createCommunity(request):
     if request.method == 'POST':
@@ -432,16 +430,23 @@ def createCommunity(request):
             community_name = data['community_name']
             community_location = data['community_location']
             community_description = data['community_description']
+            user_that_created = data['user']
 
-            if community_name and community_location and community_description:
+            if community_name and community_location and community_description and user_that_created:
 
                 Community.objects.create(
                     name=community_name,
                     location=community_location,
                     description=community_description
                 )
+                
+                # add user to that community
+                community = Community.objects.get(name=community_name)
+                user = User.objects.get(username=user_that_created)
+                user_profile = UserProfile.objects.get(user=user)
+                user_profile.communities.add(community)
 
-                return JsonResponse({'status': 'success'})
+                return JsonResponse({'status': 'success', 'community_code': community.join_pass})
             else:
                 return JsonResponse({'status': 'error', 'message': 'Missing required data'})
         except json.JSONDecodeError as e:

@@ -8,22 +8,8 @@ class UserProfile(models.Model):
     # Add any additional fields here
     communities = models.ManyToManyField('Community', related_name='user_profiles', blank=True)
 
-    # def save(self, *args, **kwargs):
-    #     # Override the save method to prevent adding communities by default
-    #     if not self.pk:
-    #         self.communities.clear()  # Clear any existing communities when creating a new profile
-    #     super().save(*args, **kwargs)
-
     def __str__(self):
         return self.user.username + " - " + self.user.email + " - " + str(self.user.id)
-
-    # def add_community(self, community):
-    #     self.communities.add(community)
-    #     return f"Community '{community.name}' added to user '{self.user.username}'"
-
-    # def remove_community(self, community):
-    #     self.communities.remove(community)
-    #     return f"Community '{community.name}' removed from user '{self.user.username}'"
 
     def get_communities(self):
         return self.communities.all()

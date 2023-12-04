@@ -17,12 +17,34 @@ export const Dashboard = () => {
   const [communityName, setCommunityName] = useState('');
   const [communityLocation, setCommunityLocation] = useState('');
   const [communityDescription, setCommunityDescription] = useState('');
+  const [newCommunityCode, setNewCommunityCode] = useState('');
 
   const [communities, setCommunities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const { user, setCommunityData } = useAuth();
+
+  const handleCreateCommunity = () => {
+    const communityData = {
+      community_name: communityName,
+      community_location: communityLocation,
+      community_description: communityDescription,
+      user: user.username
+    };
+
+    axios.post('http://localhost:8000/api/addCommunity/', communityData)
+    .then(response => {
+      console.log(response.data);
+      setCommunityData(response.data);
+      if (response.data.status === "success") {
+        setNewCommunityCode(response.data.join_pass);
+      }
+    })
+    .catch(error => {
+      console.error('Error posting data', error);
+    });
+  }
 
   useEffect(() => {
     if (!user) {
@@ -41,7 +63,7 @@ export const Dashboard = () => {
         setError(error);
       })
       .finally(() => setIsLoading(false));
-    }, [communityCode]);
+    }, [communityCode, newCommunityCode]);
 
 
   const handleSubmit = (e) => {
@@ -83,6 +105,9 @@ export const Dashboard = () => {
       </div>
 
       <div className='create-community'>
+        {newCommunityCode && 
+          <div className='option-heading'>Your newly created Community's Code is: {newCommunityCode}</div>
+        }
           <div className='option-heading'>Create A New Community </div>
           <form className='create-community-form'>
           <label htmlFor="communityName">Community Name</label>
@@ -90,16 +115,16 @@ export const Dashboard = () => {
             type="text" 
             id="communityName" 
             name="communityName" 
-            value={communityCode}
-            onChange={(e) => setCommunityCode(e.target.value)}
+            value={communityName}
+            onChange={(e) => setCommunityName(e.target.value)}
           />
           <label htmlFor="communityLocation">Community Location</label>
           <input 
             type="text" 
             id="communityLocation" 
             name="communityLocation" 
-            value={communityCode}
-            onChange={(e) => setCommunityCode(e.target.value)}
+            value={communityLocation}
+            onChange={(e) => setCommunityLocation(e.target.value)}
           />
           <label hmlFor="description">Description</label>
         <textarea
@@ -108,7 +133,7 @@ export const Dashboard = () => {
           value={communityDescription}
           onChange={(e) => setCommunityDescription(e.target.value)}
         />
-          <button type="submit">Submit</button>
+          <button type="submit" onClick={handleCreateCommunity}>Submit</button>
           </form>
       </div>
 
