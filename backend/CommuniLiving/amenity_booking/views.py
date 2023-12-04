@@ -390,7 +390,8 @@ class TimeTableView(APIView):
                 amenities_data.append({
                     'amenity_name': amenity.name,  # Assuming your Amenity model has a 'name' field
                     'amenity_id': amenity.id,
-                    'time_slots': time_slots
+                    'time_slots': time_slots,
+                    'description': amenity.description,
                 })
 
             return Response({'date': curr_date.strftime("%Y-%m-%d"), 'amenities': amenities_data})

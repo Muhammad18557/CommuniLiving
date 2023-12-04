@@ -44,11 +44,20 @@ const BookingCard: FC<BookingCardProps> = ({
         <span className="text-wrapper-2">: {members}</span>
         <br /><br />
 
-        <span className="span">Amenities</span>
-        <span className="text-wrapper-2">: {amenities}</span>
-        <br /><br />
+        {
+  amenities === "" 
+  ? <div>
+      <span className="span">Amenities</span>
+      <span className="text-wrapper-2">: No amenities for this community yet</span>
+    </div>
+  : <div>
+      <span className="span">Amenities</span>
+      <span className="text-wrapper-2">: {amenities}</span>
+    </div>
+}
+<br /><br />
 
-        <span className="span">Admin Contact</span>
+        <span className="span">Description</span>
         <span className="text-wrapper-2">: {adminContact}</span>
         <br />
       </p>

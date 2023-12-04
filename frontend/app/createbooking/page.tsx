@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useHistory } from 'react-router-dom';
+
 
 import axios from 'axios';
 import { useAuth } from "../components/Body/authentication/AuthContext";
@@ -10,6 +10,7 @@ import withAuthProtection from "../components/Body/authentication/HOC";
 const Calendar: React.FC = () => {
     const { user, community, setCommunity } = useAuth();
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [showDescription, setShowDescription] = useState(false);
     const [amenities, setAmenities] = useState<any[]>([]);
     const [messageFlag, setMessageFlag] = useState(false);
     const [selectedSlots, setSelectedSlots] = useState<{ time: string; amenityId: number }[]>([]);
@@ -60,6 +61,7 @@ const Calendar: React.FC = () => {
           .then(data => {
               setMessageFlag(false);
               setAmenities(data.amenities);
+              console.log(data.amenities);
               if (data.amenities && data.amenities.length  === 0) {
                   setMessageFlag(true);
               }
@@ -190,15 +192,27 @@ const Calendar: React.FC = () => {
                     </div>
                 </div>
                 <table id="scheduleTable">
+                    {!messageFlag && <caption>Click on the amenities to get descriptions.</caption>}
+                    
                     <thead>
-                        <tr>
-                            <th>Time</th>
+                    <tr>
+                        <th>Time</th>
+                        {amenities.map(amenity => (
+                        <th key={amenity.amenity_id} onClick={() => setShowDescription(!showDescription)} className="drop">
+                            {amenity.amenity_name}
+                        </th>
+                        ))}
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                        {showDescription && <tr>
+                            <th>Description</th>
                             {amenities.map(amenity => (
-                                <th key={amenity.amenity_id}>{amenity.amenity_name}</th>
+                                <th key={amenity.amenity_id}>{amenity.description}</th>
                             ))}
                         </tr>
-                    </thead>
-                    <tbody>
+                            }
                       {timeSlots.map(time => (
                           <tr key={time}>
                               <td>{time}</td>
@@ -217,10 +231,12 @@ const Calendar: React.FC = () => {
                               })}
                           </tr>
                       ))}
+                      
                     </tbody>
                 </table>
             </div>
 
+            
 
         </div>
     );

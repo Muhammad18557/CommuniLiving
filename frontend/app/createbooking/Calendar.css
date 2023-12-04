@@ -229,3 +229,7 @@ thead, tbody tr {
     margin-bottom: 10px;
 }
 
+
+.drop {
+    cursor: pointer;
+  }

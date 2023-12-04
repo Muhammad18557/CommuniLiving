@@ -14,6 +14,7 @@ export const Dashboard = () => {
   const [communityDescription, setCommunityDescription] = useState('');
   const [newCommunityCode, setNewCommunityCode] = useState('');
   const [noCommunity, setNoCommunity] = useState(false);
+  const [amenities, setAmenities] = useState([]);
 
   const [communities, setCommunities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +30,18 @@ export const Dashboard = () => {
       user: user.username
     };
 
+  const amenitiesGivenCommunity = (community) =>{
+    axios.get(`http://localhost:8000/api/amenities?community_name=${community}`)
+      .then(response => {
+        console.log('Response:', response.data);
+        setAmenities(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching amenities:', error);
+      });
+  };
+
+
     axios.post('http://localhost:8000/api/addCommunity/', communityData)
     .then(response => {
       console.log(response.data);
@@ -42,23 +55,55 @@ export const Dashboard = () => {
     });
   }
 
+  // useEffect(() => {
+  //   if (!user) {
+  //     return;
+  //   }
+  //   let url = `http://localhost:8000/api/get_user_communities/?username=${encodeURIComponent(user.username)}&details=1`;
+  //   axios.get(url)
+  //     .then(response => {
+  //       console.log(response)
+  //       console.log(response.data.communities);
+  //       if (response.data.communities && response.data.communities.length === 0) {
+  //         setNoCommunity(true);
+  //       }
+  //       else {
+  //         setNoCommunity(false);
+  //       }
+  //       setCommunities(response.data.communities);
+  //       console.log("communities: ", communities)
+  //       setError("");
+  //     })
+  //     .catch(error => {
+  //       console.error("Error fetching data: ", error);
+  //       setError(error);
+  //     })
+  //     .finally(() => setIsLoading(false));
+  //   }, [communityCode, newCommunityCode]);
+
   useEffect(() => {
     if (!user) {
       return;
     }
+  
     let url = `http://localhost:8000/api/get_user_communities/?username=${encodeURIComponent(user.username)}&details=1`;
     axios.get(url)
-      .then(response => {
-        console.log(response)
-        console.log(response.data.communities);
-        if (response.data.communities && response.data.communities.length === 0) {
+      .then(async response => {
+        if (response.data.communities && response.data.communities.length > 0) {
+          const communitiesWithAmenities = await Promise.all(response.data.communities.map(async (community) => {
+            try {
+              const amenitiesResponse = await axios.get(`http://localhost:8000/api/amenities?community_name=${community.community_name}`);
+              const amenityNames = amenitiesResponse.data.map(amenity => amenity.name);
+              return { ...community, amenities: amenityNames };
+            } catch (error) {
+              console.error('Error fetching amenities for community:', community.community_name, error);
+              return { ...community, amenities: [] }; // Return community with empty amenities in case of error
+            }
+          }));
+          setCommunities(communitiesWithAmenities);
+        } else {
           setNoCommunity(true);
         }
-        else {
-          setNoCommunity(false);
-        }
-        setCommunities(response.data.communities);
-        console.log("communities: ", communities)
         setError("");
       })
       .catch(error => {
@@ -66,7 +111,8 @@ export const Dashboard = () => {
         setError(error);
       })
       .finally(() => setIsLoading(false));
-    }, [communityCode, newCommunityCode]);
+  }, [communityCode, newCommunityCode]);
+  
 
 
   const handleSubmit = (e) => {
@@ -79,6 +125,7 @@ export const Dashboard = () => {
     })
     .then(response => {
       console.log(response.data);
+      window.location.reload();
 
     })
     .catch(error => {
@@ -96,7 +143,7 @@ export const Dashboard = () => {
           <div className="page-info">{ communities.length != 0 ? <h5>Here are your communities</h5> : <h5>You aren't a part of any community yet.</h5>}</div>
         </div>
       </div>
-      <div className='card-container'>
+      {/* <div className='card-container'>
         {communities && communities.map((community) => (
           <BookingCard
             key={community.id}
@@ -104,10 +151,23 @@ export const Dashboard = () => {
             location={community.location}
             members={community.join_pass}
             amenities=""
-            adminContact=""
+            adminContact={community.description}
           />
         ))}
-      </div>
+      </div> */}
+
+<div className='card-container'>
+  {communities && communities.map((community) => (
+    <BookingCard
+      key={community.id}
+      name={community.community_name}
+      location={community.location}
+      members={community.join_pass}
+      amenities={community.amenities.join(", ")} // Assuming amenities is an array of strings
+      adminContact={community.description}
+    />
+  ))}
+</div>
 
       <div className='create-community'>
         {newCommunityCode && 
