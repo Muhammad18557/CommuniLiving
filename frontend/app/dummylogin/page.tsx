@@ -6,6 +6,7 @@ import '../dummy/dummy.css';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useAuth } from '../components/Body/authentication/AuthContext';
+import './loginNew.css'
 
 function DummyLogin() {
   const [username, setUsername] = useState('');
@@ -114,6 +115,9 @@ function DummyLogin() {
             </div>
               <div className="d-grid">
                 <button type='submit' className ="btn-primary">Login</button>
+              </div>
+              <div className='sign-up-option'> 
+                Don't have an account? <Link href="/signup" className='signup'>Sign up</Link>
               </div>
           </div>
       </form>
