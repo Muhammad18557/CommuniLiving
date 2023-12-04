@@ -54,6 +54,7 @@ function CreateBooking() {
       return;
     }
     const bookingData = {
+      user: user.username,
       amenity: selectedAmenity.id,
       date: bookingDate,
       start_time: startTime,

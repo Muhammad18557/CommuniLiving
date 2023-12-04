@@ -127,6 +127,7 @@ const Calendar: React.FC = () => {
         }
 
       const bookingData = {
+          user: user.username,
           amenity: amenity.amenity_id,
           date: currentDate.toISOString().split('T')[0],
           start_time: selectedSlot.time.split(' - ')[0],

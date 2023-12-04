@@ -148,10 +148,8 @@ class BookingView(APIView):
   
     def post(self, request): 
         """ Creates a new booking in the database for an amenity."""
-        print(request.user)
-        print(request)
-        # hard coding user for now, to be session authenticated later
-        request.data['user'] = 1
+        userProfile = UserProfile.objects.get(user__username=request.data['user'])
+        request.data['user'] = userProfile.user.id
         serializer = BookingSerializer(data=request.data)
         amenityId = request.data['amenity']
         date = request.data['date']
