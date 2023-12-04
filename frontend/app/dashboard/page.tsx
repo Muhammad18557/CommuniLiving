@@ -136,7 +136,7 @@ export const Dashboard = () => {
             value={communityLocation}
             onChange={(e) => setCommunityLocation(e.target.value)}
           />
-          <label hmlFor="description">Description</label>
+          <label htmlFor="description">Description</label>
         <textarea
           id="description"
           name="description"
