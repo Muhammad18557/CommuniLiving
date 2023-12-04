@@ -23,7 +23,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
   const router = useRouter();
 
   const handleNavigation = () => {
-    router.push(isSignUp ? '/dummyLogin' : '/signup');
+    router.push(isSignUp ? '/login' : '/signup');
   };
 
   // const handleAnonymousLogin = async () => {
@@ -192,7 +192,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
       if (successSignUp) {
         const redirectTimeout = setTimeout(() => {
           // Redirect to the sign-in page after successful registration
-          router.push('/dummyLogin');
+          router.push('/login');
         }, 1500);
     
         return () => clearTimeout(redirectTimeout); // Cleanup on unmount
@@ -342,7 +342,7 @@ export default function AuthForm({ isSignUp }: AuthFormProps) {
 
             <p className="mt-10 text-center text-sm text-gray-500">
               {isSignUp ? 'Already a member? ' : 'Not a member? '}
-              <Link href={isSignUp ? '/dummyLogin' : '/signup'}>
+              <Link href={isSignUp ? '/login' : '/signup'}>
                 <span className="font-semibold leading-6 text-primary hover:text-secondary">
                   {isSignUp ? 'Sign In' : 'Create Account'}
                 </span>

@@ -46,7 +46,7 @@ import axios from 'axios';
 import AnnoucementCard from '../components/AnnoucementCard/AnnoucementCard';
 import './annoucementDashboard.css';
 import { useAuth } from '../components/Body/authentication/AuthContext';
-import DummyLogin from '../dummylogin/page';
+import DummyLogin from '../login/page';
 import withAuthProtection from '../components/Body/authentication/HOC';
 
 export const AnnoucementDashboard = () => {

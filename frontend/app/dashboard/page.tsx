@@ -18,6 +18,7 @@ export const Dashboard = () => {
   const [communityLocation, setCommunityLocation] = useState('');
   const [communityDescription, setCommunityDescription] = useState('');
   const [newCommunityCode, setNewCommunityCode] = useState('');
+  const [noCommunity, setNoCommunity] = useState(false);
 
   const [communities, setCommunities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +56,14 @@ export const Dashboard = () => {
       .then(response => {
         console.log(response)
         console.log(response.data.communities);
+        if (response.data.communities && response.data.communities.length === 0) {
+          setNoCommunity(true);
+        }
+        else {
+          setNoCommunity(false);
+        }
         setCommunities(response.data.communities);
+        console.log("communities: ", communities)
         setError("");
       })
       .catch(error => {
@@ -76,9 +84,11 @@ export const Dashboard = () => {
     })
     .then(response => {
       console.log(response.data);
+
     })
     .catch(error => {
       console.error('Error posting data', error);
+      alert("Error adding you to this community.");
     });
 };
 
@@ -88,7 +98,7 @@ export const Dashboard = () => {
         <div className="page-intro">
           <br></br>
           <div className="page-title"><h1>Welcome to your Dashboard, {user.username}</h1></div>
-          <div className="page-info">{ communities ? <h5>Here are your communities</h5> : <h5>You aren't a part of any community yet.</h5>}</div>
+          <div className="page-info">{ communities.length != 0 ? <h5>Here are your communities</h5> : <h5>You aren't a part of any community yet.</h5>}</div>
         </div>
       </div>
       <div className='card-container'>

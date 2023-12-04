@@ -14,12 +14,15 @@ class UserProfile(models.Model):
     def get_communities(self):
         return self.communities.all()
 
+def generate_join_pass():
+    return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
 class Community(models.Model):
     """A cummunity is an apartment/suite etc that has multiple amenities."""
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     location = models.TextField(blank=True, null=True)
-    join_pass = models.CharField(max_length=6, default=''.join([str(random.randint(0, 9)) for _ in range(6)]), unique=True)
+    join_pass = models.CharField(max_length=6, default=generate_join_pass, unique=True)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):

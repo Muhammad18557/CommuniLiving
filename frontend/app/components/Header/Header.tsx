@@ -45,9 +45,9 @@ function Header() {
                 <li className='menu-item'>
                     {isLoggedIn ? (
                         // If user is authenticated, show logout button
-                        <Link href='/dummylogin' className='menu-links' onClick={handleLogout}> <button className='login-button'>Log Out</button></Link>
+                        <Link href='/login' className='menu-links' onClick={handleLogout}> <button className='login-button'>Log Out</button></Link>
                     ) : (
-                        <Link href='/dummylogin' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link>
+                        <Link href='/login' className='menu-links' onClick={closeMobileMenu}> <button className='login-button'>Log In</button></Link>
                     )}
                 </li>
             </ul>
