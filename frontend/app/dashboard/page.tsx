@@ -1,8 +1,3 @@
-// import React from "react";
-// import BookingCard from '../components/BookingCard/BookingCard';
-// import "./userDashboard.css";
-// import bookingData from './bookingData.json';
-// import Link from 'next/link'; 
 "use client";
 import { useEffect, useState } from 'react';
 import React from 'react';

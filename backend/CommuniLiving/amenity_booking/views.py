@@ -234,6 +234,7 @@ def AddUserCommunity(request):
         print(request.body)
         try:
             data = json.loads(request.body.decode('utf-8'))
+            print(data)
             username = data['user']
             community_pass = data['community_pass']
 
@@ -243,25 +244,28 @@ def AddUserCommunity(request):
             try:
                 # print(Community.objects.get(join_pass=091786))
                 community = Community.objects.get(join_pass=community_pass)
+                print(community)
             except Community.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'Invalid community pass'}, status=400)
 
             try:
                 user = User.objects.get(username=username)
+                print(user)
             except User.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'User not found'}, status=400)
 
-            user_profile, created = UserProfile.objects.get_or_create(user=user)
+            user_profile = UserProfile.objects.get(user=user)
+            print(user_profile)
 
+            print(user_profile.get_communities())
             if community not in user_profile.communities.all():
+                print("failing")
                 user_profile.communities.add(community)
                 print(user_profile.get_communities())
                 return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
             else:
                 return JsonResponse({'status': 'error', 'message': 'User is already part of the community'}, status=400)
 
-
-            return JsonResponse({'status': 'success', 'user_id': user.id}, status=201)
         except json.JSONDecodeError as e:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
     else:
