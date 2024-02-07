@@ -51,7 +51,7 @@ CommuniLiving is a web application designed to elevate the communal living exper
 
 # Contributors
 Muhammad Abdullah  
-Mohammad Dabeer Ahmed  
+Dabeer Ahmed  
 Thomas Jagielski  
 Martin Lim  
 Sanjit Ramesh Chandran  
